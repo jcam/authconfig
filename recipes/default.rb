@@ -20,8 +20,8 @@
 #
 
 # Run the authconfig script, only on arguments file change
-execute "authconfig-update"
-	command "/bin/cat /etc/authconfig/arguments | /usr/bin/xargs /usr/sbin/authconfig --update" do
+execute "authconfig-update" do
+	command "/bin/cat /etc/authconfig/arguments | /usr/bin/xargs /usr/sbin/authconfig --update"
   action :nothing
 end
 
@@ -37,5 +37,5 @@ template "/etc/authconfig/arguments" do
   mode 0440
   owner "root"
   group "root"
-	notifies :run, "execute[test-nagios-config]"
+	notifies :run, "execute[authconfig-update]"
 end
