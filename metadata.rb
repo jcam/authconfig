@@ -1,6 +1,6 @@
-maintainer       "YOUR_COMPANY_NAME"
-maintainer_email "YOUR_EMAIL"
-license          "All rights reserved"
-description      "Installs/Configures authconfig"
+maintainer       "Jesse Campbell"
+maintainer_email "hikeit@gmail.com"
+license          "Apache License"
+description      "Configures authconfig"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "0.0.1"
