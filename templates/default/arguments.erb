@@ -133,9 +133,9 @@
 	--disablesssd
 <% end -%>
 <% if node[:authconfig][:sssd][:auth] -%>
-	--enablessdauth
+	--enablesssdauth
 <% else -%>
-	--disablessdauth
+	--disablesssdauth
 <% end -%>
 <% if node[:authconfig][:sssd][:forcelegacy] -%>
 	--enableforcelegacy
