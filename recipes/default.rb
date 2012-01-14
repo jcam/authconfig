@@ -36,7 +36,4 @@ template "/etc/authconfig/arguments" do
   mode 0440
   owner "root"
   group "root"
-  variables(
-    :authconfig => node['authconfig']
-  )
 end
