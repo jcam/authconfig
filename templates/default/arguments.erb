@@ -90,8 +90,8 @@
 --smbsecurity=<% node[:authconfig][:winbind][:smb][:security] %>
 --smbrealm=<% node[:authconfig][:winbind][:smb][:realm] %>
 --smbservers=<% node[:authconfig][:winbind][:smb][:servers] %>
---smbworkgroup=<% node["authconfig"]["winbind"]["smb"]["workgroup"] %>
---smbidmapuid=<% node[:authconfig][:winbind][:smb][:idmapuid] %>
+--smbworkgroup=<% @authconfig["winbind"]["smb"]["workgroup"] %>
+--smbidmapuid=<% @authconfig[:winbind][:smb][:idmapuid] %>
 --smbidmapgid=<% node[:authconfig][:winbind][:smb][:idmapgid] %>
 --winbindseparator=<% node[:authconfig][:winbind][:separator] -%>
 --winbindtemplatehomedir=<% node[:authconfig][:winbind][:template][:homedir] %>
