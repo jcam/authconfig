@@ -24,6 +24,13 @@ execute "/usr/bin/vmware-uninstall-tools.pl" do
   action :nothing
 end
 
+directory "/etc/authconfig" do
+	owner "root"
+	group "root"
+	mode "0755"
+	action :create
+end
+
 template "/etc/authconfig/arguments" do
   source "arguments.erb"
   mode 0440
