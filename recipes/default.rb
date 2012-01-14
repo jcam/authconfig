@@ -20,7 +20,8 @@
 #
 
 # Run the authconfig script, only on arguments file change
-execute "/usr/bin/vmware-uninstall-tools.pl" do
+execute "authconfig-update"
+	command "/bin/cat /etc/authconfig/arguments | /usr/bin/xargs /usr/sbin/authconfig --update" do
   action :nothing
 end
 
@@ -36,4 +37,5 @@ template "/etc/authconfig/arguments" do
   mode 0440
   owner "root"
   group "root"
+	notifies :run, "execute[test-nagios-config]"
 end
