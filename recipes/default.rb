@@ -20,6 +20,10 @@
 #
 
 # Run the authconfig script, only on arguments file change
+service "sssd" do
+	supports :status => true, :restart => true, :reload => true
+end
+
 execute "authconfig-update" do
 	command "/bin/cat /etc/authconfig/arguments | /usr/bin/xargs /usr/sbin/authconfig --update"
   action :nothing
@@ -38,4 +42,21 @@ template "/etc/authconfig/arguments" do
   owner "root"
   group "root"
 	notifies :run, "execute[authconfig-update]"
+end
+
+execute "restorecon /etc/sssd/sssd.conf" do
+	action :nothing
+end
+
+template "/etc/sssd/sssd.conf" do
+	source "sssd.conf.erb"
+	mode 0600
+	owner "root"
+	group "root"
+	variables(
+		:oldfile => "/etc/sssd/sssd.conf",
+		:insertlines => node['authconfig']['sssd']['insertlines']
+	)
+	notifies :run, "execute[restorecon /etc/sssd/sssd.conf]", :immediately
+	notifies :reload, "service[sssd]"
 end

@@ -66,6 +66,7 @@ default['authconfig']['sssd']['enable'] = false
 default['authconfig']['sssd']['auth'] = false
 default['authconfig']['sssd']['forcelegacy'] = false
 default['authconfig']['sssd']['cachecreds'] = true
+default['authconfig']['sssd']['insertlines'] = Array.new
 default['authconfig']['cachecreds'] = false
 default['authconfig']['localauth'] = true
 default['authconfig']['pamaccess'] = false
