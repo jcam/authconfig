@@ -41,7 +41,7 @@ template "/etc/authconfig/arguments" do
   mode 0440
   owner "root"
   group "root"
-	notifies :run, "execute[authconfig-update]"
+	notifies :run, "execute[authconfig-update]", :immediately
 end
 
 execute "restorecon /etc/sssd/sssd.conf" do
@@ -58,5 +58,5 @@ template "/etc/sssd/sssd.conf" do
 		:insertlines => node['authconfig']['sssd']['insertlines']
 	)
 	notifies :run, "execute[restorecon /etc/sssd/sssd.conf]", :immediately
-	notifies :reload, "service[sssd]"
+	notifies :reload, "service[sssd]", :immediately
 end
