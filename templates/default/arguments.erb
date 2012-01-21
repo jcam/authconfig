@@ -28,18 +28,26 @@
 <% end -%>
 --ldapserver=<%= node[:authconfig][:ldap][:server] %>
 --ldapbasedn=<%= node[:authconfig][:ldap][:basedn] %>
-<% if node[:authconfig][:ldap][:starttls] -%>
+<% if node[:authconfig][:ldap][:starttls] && node[:platform_version].to_i == 6 -%>
 	--enableldapstarttls
+<% elsif node[:authconfig][:ldap][:ssl] && node[:platform_version].to_i == 5 -%>
+	--enableldapssl
 <% elsif node[:authconfig][:ldap][:tls] -%>
 	--enableldaptls
 <% else -%>
+	<% if node[:platform_version].to_i == 6 -%>
+		--disableldapstarttls
+	<% else -%>
+		--disableldapssl
+	<% end -%>
 	--disableldaptls
-	--disableldapstarttls
 <% end -%>
-<% if node[:authconfig][:ldap][:rfc2307bis] -%>
-	--enablerfc2307bis
-<% else -%>
-	--disablerfc2307bis
+<% if node[:platform_version].to_i == 6 -%>
+	<% if node[:authconfig][:ldap][:rfc2307bis] -%>
+		--enablerfc2307bis
+	<% else -%>
+		--disablerfc2307bis
+	<% end -%>
 <% end -%>
 --ldaploadcacert=<%= node[:authconfig][:ldap][:cacerturl] %>
 <% if node[:authconfig][:smartcard][:enable] -%>
@@ -54,10 +62,12 @@
 <% else -%>
 	--disablesmartcard
 <% end -%>
-<% if node[:authconfig][:fingerprint][:enable] -%>
-	--enablefingerprint
-<% else -%>
-	--disablefingerprint
+<% if node[:platform_version].to_i == 6 -%>
+	<% if node[:authconfig][:fingerprint][:enable] -%>
+		--enablefingerprint
+	<% else -%>
+		--disablefingerprint
+	<% end -%>
 <% end -%>
 <% if node[:authconfig][:kerberos][:enable] -%>
 	--enablekrb5
@@ -86,6 +96,13 @@
 	--enablewinbindauth
 <% else -%>
 	--disablewinbindauth
+<% end -%>
+<% if node[:platform_version].to_i == 5 -%>
+	<% if node[:authconfig][:winbind][:smb][:auth] -%>
+		--enablesmbauth
+	<% else -%>
+		--disablesmbauth
+	<% end -%>
 <% end -%>
 --smbsecurity=<%= node[:authconfig][:winbind][:smb][:security] %>
 --smbrealm=<%= node[:authconfig][:winbind][:smb][:realm] %>
@@ -127,25 +144,27 @@
 <% else -%>
 	--disablehesiod
 <% end -%>
-<% if node[:authconfig][:sssd][:enable] -%>
-	--enablesssd
-<% else -%>
-	--disablesssd
-<% end -%>
-<% if node[:authconfig][:sssd][:auth] -%>
-	--enablesssdauth
-<% else -%>
-	--disablesssdauth
-<% end -%>
-<% if node[:authconfig][:sssd][:forcelegacy] -%>
-	--enableforcelegacy
-<% else -%>
-	--disableforcelegacy
-<% end -%>
-<% if node[:authconfig][:sssd][:cachecreds] -%>
-	--enablecachecreds
-<% else -%>
-	--disablecachecreds
+<% if node[:platform_version].to_i == 6 -%>
+	<% if node[:authconfig][:sssd][:enable] -%>
+		--enablesssd
+	<% else -%>
+		--disablesssd
+	<% end -%>
+	<% if node[:authconfig][:sssd][:auth] -%>
+		--enablesssdauth
+	<% else -%>
+		--disablesssdauth
+	<% end -%>
+	<% if node[:authconfig][:sssd][:forcelegacy] -%>
+		--enableforcelegacy
+	<% else -%>
+		--disableforcelegacy
+	<% end -%>
+	<% if node[:authconfig][:sssd][:cachecreds] -%>
+		--enablecachecreds
+	<% else -%>
+		--disablecachecreds
+	<% end -%>
 <% end -%>
 <% if node[:authconfig][:cacheinfo] -%>
 	--enablecache

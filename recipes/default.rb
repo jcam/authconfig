@@ -20,13 +20,9 @@
 #
 
 # Run the authconfig script, only on arguments file change
-service "sssd" do
-	supports :status => true, :restart => true, :reload => true
-end
-
 execute "authconfig-update" do
 	command "/bin/cat /etc/authconfig/arguments | /usr/bin/xargs /usr/sbin/authconfig --update"
-  action :nothing
+	action :nothing
 end
 
 directory "/etc/authconfig" do
@@ -37,26 +33,32 @@ directory "/etc/authconfig" do
 end
 
 template "/etc/authconfig/arguments" do
-  source "arguments.erb"
-  mode 0440
-  owner "root"
-  group "root"
+	source "arguments.erb"
+	mode 0440
+	owner "root"
+	group "root"
 	notifies :run, "execute[authconfig-update]", :immediately
 end
 
-execute "restorecon /etc/sssd/sssd.conf" do
-	action :nothing
-end
+if node[:platform_version].to_i == 6
+	service "sssd" do
+		supports :status => true, :restart => true, :reload => true
+	end
 
-template "/etc/sssd/sssd.conf" do
-	source "sssd.conf.erb"
-	mode 0600
-	owner "root"
-	group "root"
-	variables(
-		:oldfile => "/etc/sssd/sssd.conf",
-		:insertlines => node['authconfig']['sssd']['insertlines']
-	)
-	notifies :run, "execute[restorecon /etc/sssd/sssd.conf]", :immediately
-	notifies :reload, "service[sssd]", :immediately
+	execute "restorecon /etc/sssd/sssd.conf" do
+		action :nothing
+	end
+
+	template "/etc/sssd/sssd.conf" do
+		source "sssd.conf.erb"
+		mode 0600
+		owner "root"
+		group "root"
+		variables(
+			:oldfile => "/etc/sssd/sssd.conf",
+			:insertlines => node['authconfig']['sssd']['insertlines']
+		)
+		notifies :run, "execute[restorecon /etc/sssd/sssd.conf]", :immediately
+		notifies :reload, "service[sssd]", :immediately
+	end
 end
