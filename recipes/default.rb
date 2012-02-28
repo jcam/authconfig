@@ -63,7 +63,7 @@ if node[:platform_version].to_i == 6
 			:insertlines => node['authconfig']['sssd']['insertlines']
 		)
 		notifies :run, "execute[restorecon /etc/sssd/sssd.conf]", :immediately
-		notifies :reload, "service[sssd]"
+		notifies :restart, "service[sssd]"
 		notifies :reload, "service[autofs]"
 	end
 end
