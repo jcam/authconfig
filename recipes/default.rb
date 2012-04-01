@@ -25,6 +25,10 @@ execute "authconfig-update" do
 	action :nothing
 end
 
+service "autofs" do
+	supports :status => true, :restart => true, :reload => true
+end
+
 directory "/etc/authconfig" do
 	owner "root"
 	group "root"
@@ -38,14 +42,11 @@ template "/etc/authconfig/arguments" do
 	owner "root"
 	group "root"
 	notifies :run, "execute[authconfig-update]", :immediately
+	notifies :reload, "service[autofs]"
 end
 
 if node[:platform_version].to_i == 6
 	service "sssd" do
-		supports :status => true, :restart => true, :reload => true
-	end
-
-	service "autofs" do
 		supports :status => true, :restart => true, :reload => true
 	end
 
@@ -64,6 +65,7 @@ if node[:platform_version].to_i == 6
 		)
 		notifies :run, "execute[restorecon /etc/sssd/sssd.conf]", :immediately
 		notifies :restart, "service[sssd]"
-		notifies :reload, "service[autofs]"
 	end
+#elsif node[:platform_version].to_i == 5
+	
 end
