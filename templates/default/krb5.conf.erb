@@ -1,0 +1,31 @@
+[logging]
+ default = FILE:/var/log/krb5libs.log
+ kdc = FILE:/var/log/krb5kdc.log
+ admin_server = FILE:/var/log/kadmind.log
+
+[libdefaults]
+ default_realm = SETG.LOCAL
+ dns_lookup_realm = true
+ dns_lookup_kdc = true
+ ticket_lifetime = 24h
+ forwardable = yes
+
+[realms]
+ SETG.LOCAL = {
+  kdc = <%=@bind_dn%>
+  admin_server = <%=@bind_dn%>
+ }
+
+
+[domain_realm]
+
+ setg.local = SETG.LOCAL
+ .setg.local = SETG.LOCAL
+[appdefaults]
+ pam = {
+   debug = false
+   ticket_lifetime = 36000
+   renew_lifetime = 36000
+   forwardable = true
+   krb4_convert = false
+ }

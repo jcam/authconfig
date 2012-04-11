@@ -1,6 +1,5 @@
 #
 # Cookbook Name:: authconfig
-
 # Recipe:: default
 #
 # Copyright 2012, Jesse Campbell
@@ -61,39 +60,12 @@ if node[:platform_version].to_i == 6
 		owner "root"
 		group "root"
 		variables(
-			:ldap_uri=node['authconfig']['ldap']['uri'],
-			:bind_dn=node['authconfig']['ldap']['bind_dn'],
-			:bind_pw=node['authconfig']['ldap']['bind_pw']
+			:oldfile => "/etc/sssd/sssd.conf",
+			:insertlines => node['authconfig']['sssd']['insertlines']
 		)
 		notifies :run, "execute[restorecon /etc/sssd/sssd.conf]", :immediately
 		notifies :restart, "service[sssd]"
 	end
-elsif node[:platform_version].to_i == 5
-        template "/etc/nsswitch.conf" do
-                source "nsswitch.conf.erb"
-                mode 0600
-                owner "root"
-                group "root"
-	end
-        template "/etc/ldap.conf" do
-                source "ldap.conf.erb"
-                mode 0600
-                owner "root"
-                group "root"
-                variables(
-                        :ldap_uri=node['authconfig']['ldap']['uri'],
-                        :bind_dn=node['authconfig']['ldap']['bind_dn'],
-                        :bind_pw=node['authconfig']['ldap']['bind_pw']
-                )
-        end
-        template "/etc/krb5.conf" do
-                source "krb5.conf.erb"
-                mode 0600
-                owner "root"
-                group "root"
-                variables(
-                        :bind_dn=node['authconfig']['ldap']['bind_dn']
-                )
-        end
-
+#elsif node[:platform_version].to_i == 5
+	
 end

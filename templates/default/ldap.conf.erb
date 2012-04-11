@@ -1,0 +1,22 @@
+#base cn=users,dc=setg,dc=local
+base cn=users,<%=@bind_dn%>
+#binddn cn=LDAP-bind,cn=users,dc=setg,dc=local
+binddn <%=@bind_dn%>
+bindpw <%=@bind_pw%>
+timelimit 120
+bind_timelimit 120
+idle_timelimit 3600
+nss_initgroups_ignoreusers root,ldap,named,avahi,haldaemon,dbus,radvd,tomcat,radiusd,news,mailman,nscd,gdm
+#uri ldap://dc01.ops.atl.setg
+uri <%=@ldap_uri%>
+ssl no
+tls_cacertdir /etc/openldap/cacerts
+pam_password md5
+nss_map_objectclass posixAccount User
+nss_map_objectclass shadowAccount User
+nss_map_attribute uid sAMAccountName
+nss_map_attribute uniqueMember Member
+nss_map_attribute homeDirectory unixHomeDirectory
+nss_map_objectclass posixGroup Group
+pam_login_attribute sAMAccountName
+pam_filter objectclass=User
