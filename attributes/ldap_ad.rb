@@ -17,9 +17,9 @@
 # limitations under the License.
 #
 
-default['authconfig']['ldap']['bind_dn'] = true
-default['authconfig']['ldap']['bind_pw'] = true
-default['authconfig']['ldap']['uri'] = ''
+default['authconfig']['ldap']['bind_dn'] = 'cn=users,dc=setg,dc=local'
+default['authconfig']['ldap']['bind_pw'] = 'b4qhLZH0'
+default['authconfig']['ldap']['uri'] = 'ldap://dc01.ops.atl.setg'
 default['authconfig']['sssd']['enable'] = false
 default['authconfig']['sssd']['auth'] = false
 default['authconfig']['sssd']['forcelegacy'] = false
