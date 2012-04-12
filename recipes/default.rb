@@ -59,7 +59,8 @@ template "/etc/krb5.conf" do
         owner "root"
         group "root"
         variables(
-        	:bind_dn=>node['authconfig']['ldap']['basedn']
+        	:kdcserver=>node['authconfig']['ldap']['kdcserver']
+		:adminserver=>node['authconfig']['ldap']['adminserver']
         )
 end
 
