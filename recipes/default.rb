@@ -46,6 +46,24 @@ template "/etc/authconfig/arguments" do
 	notifies :reload, "service[autofs]"
 end
 
+template "/etc/nsswitch.conf" do
+        source "nsswitch.conf.erb"
+        mode 0600
+        owner "root"
+        group "root"
+end
+
+template "/etc/krb5.conf" do
+        source "krb5.conf.erb"
+        mode 0600
+        owner "root"
+        group "root"
+        variables(
+        	:bind_dn=>node['authconfig']['ldap']['basedn']
+        )
+end
+
+
 if node[:platform_version].to_i == 6
 	service "sssd" do
 		supports :status => true, :restart => true, :reload => true
@@ -69,12 +87,12 @@ if node[:platform_version].to_i == 6
 		notifies :restart, "service[sssd]"
 	end
 elsif node[:platform_version].to_i == 5
-        template "/etc/nsswitch.conf" do
-                source "nsswitch.conf.erb"
-                mode 0600
-                owner "root"
-                group "root"
-	end
+#        template "/etc/nsswitch.conf" do
+#                source "nsswitch.conf.erb"
+#                mode 0600
+#                owner "root"
+#                group "root"
+#	end
         template "/etc/ldap.conf" do
                 source "ldap.conf.erb"
                 mode 0600
@@ -86,14 +104,14 @@ elsif node[:platform_version].to_i == 5
                         :bind_pw=>node['authconfig']['ldap']['basepw']
                 )
         end
-        template "/etc/krb5.conf" do
-                source "krb5.conf.erb"
-                mode 0600
-                owner "root"
-                group "root"
-                variables(
-                        :bind_dn=>node['authconfig']['ldap']['basedn']
-                )
-        end
+#        template "/etc/krb5.conf" do
+#                source "krb5.conf.erb"
+#                mode 0600
+#                owner "root"
+#                group "root"
+#                variables(
+#                        :bind_dn=>node['authconfig']['ldap']['basedn']
+#                )
+#        end
 
 end
