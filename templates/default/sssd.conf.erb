@@ -86,25 +86,25 @@ reconnection_retries = 3
  ldap_default_authtok_type = password
 # ldap_default_authtok = YOUR_PASSWORD
  ldap_default_authtok = <%=@bind_pw%>
- nss_map_objectclass posixAccount User
- nss_map_objectclass shadowAccount User
- nss_map_attribute uid sAMAccountName
- nss_map_attribute uniqueMember Member
- nss_map_attribute homeDirectory unixHomeDirectory
- nss_map_objectclass posixGroup Group
- pam_login_attribute sAMAccountName
+# nss_map_objectclass posixAccount User
+# nss_map_objectclass shadowAccount User
+# nss_map_attribute uid sAMAccountName
+# nss_map_attribute uniqueMember Member
+# nss_map_attribute homeDirectory unixHomeDirectory
+# nss_map_objectclass posixGroup Group
+# pam_login_attribute sAMAccountName
 
-# ldap_user_object_class = person
-# ldap_user_name = msSFU30Name
-# ldap_user_uid_number = msSFU30UidNumber
-# ldap_user_gid_number = msSFU30GidNumber
-# ldap_user_home_directory = msSFU30HomeDirectory
-# ldap_user_shell = msSFU30LoginShell
-# ldap_user_principal = userPrincipalName
-# ldap_group_object_class = group
-# ldap_group_name = msSFU30Name
-# ldap_group_gid_number = msSFU30GidNumber
-# ldap_force_upper_case_realm = True
+ ldap_user_object_class = person
+ ldap_user_name = msSFU30Name
+ ldap_user_uid_number = msSFU30UidNumber
+ ldap_user_gid_number = msSFU30GidNumber
+ ldap_user_home_directory = msSFU30HomeDirectory
+ ldap_user_shell = msSFU30LoginShell
+ ldap_user_principal = userPrincipalName
+ ldap_group_object_class = group
+ ldap_group_name = msSFU30Name
+ ldap_group_gid_number = msSFU30GidNumber
+ ldap_force_upper_case_realm = True
 
 # [domain/default]
 # auth_provider = ldap
