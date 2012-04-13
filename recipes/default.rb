@@ -100,7 +100,8 @@ elsif node[:platform_version].to_i == 5
                 group "root"
                 variables(
                         :ldap_uri=>node['authconfig']['ldap']['server'],
-                        :bind_dn=>node['authconfig']['ldap']['dnbase'],
+                        :bind_dn=>node['authconfig']['ldap']['dnbind'],
+                        :base_dn=>node['authconfig']['ldap']['dnbase'],
                         :bind_pw=>node['authconfig']['ldap']['basepw']
                 )
         end

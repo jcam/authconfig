@@ -26,7 +26,8 @@ default['authconfig']['nis']['server'] = ''
 default['authconfig']['ldap']['enable'] = false
 default['authconfig']['ldap']['auth'] = false
 default['authconfig']['ldap']['server'] = 'ldap://dc01.ops.atl.setg'
-default['authconfig']['ldap']['dnbase'] = 'cn=LDAP-bind,cn=Users,dc=SETG,dc=local'
+default['authconfig']['ldap']['dnbind'] = 'cn=LDAP-bind,cn=users,dc=setg,dc=local'
+default['authconfig']['ldap']['dnbase'] = 'cn=users,dc=setg,dc=local'
 default['authconfig']['ldap']['basepw'] = 'b4qhLZH0'
 default['authconfig']['ldap']['starttls'] = false
 default['authconfig']['ldap']['ssl'] = false
