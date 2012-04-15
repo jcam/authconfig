@@ -1,7 +1,0 @@
-<% output = File.read(@oldfile) -%>
-<% @insertlines.each do |line| -%>
-	<% unless (output.match(/^#{line['text']}$/i)) then -%>
-		<% output = output.sub(/^(#{line['insertpoint']})$/,"\\1\n#{line['text']}") -%>
-	<% end -%>
-<% end -%>
-<%= output -%>

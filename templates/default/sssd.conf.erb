@@ -73,50 +73,50 @@ reconnection_retries = 3
 
 ldap_uri = <%= node[:authconfig][:ldap][:server] %>
 <% if node[:authconfig][:ldap][:dnbase] != '' -%>
-	ldap_search_base = <%= node[:authconfig][:ldap][:dnbase] %>
+ldap_search_base = <%= node[:authconfig][:ldap][:dnbase] %>
 <% end -%>
 <% if node[:authconfig][:ldap][:dnbind] != '' -%>
-	ldap_default_bind_dn = <%= node[:authconfig][:ldap][:dnbind] %>
+ldap_default_bind_dn = <%= node[:authconfig][:ldap][:dnbind] %>
 <% end -%>
 <% if node[:authconfig][:ldap][:rfc2307bis] -%>
-	ldap_schema = rfc2307bis
+ldap_schema = rfc2307bis
 <% else -%>
-	ldap_schema = rfc2307
+ldap_schema = rfc2307
 <% end -%>
 <% if node[:authconfig][:ldap][:enable] -%>
-	id_provider = ldap
+id_provider = ldap
 <% else -%>
-	id_provider = local
+id_provider = local
 <% end -%>
 <% if node[:authconfig][:ldap][:auth] -%>
-	auth_provider = ldap
+auth_provider = ldap
 <% elsif node[:authconfig][:kerberos][:enable] -%>
-	auth_provider = krb5
+auth_provider = krb5
 <% else -%>
-	auth_provider = none
+auth_provider = none
 <% end -%>
 krb5_realm = <%= node[:authconfig][:kerberos][:realm] %>
 krb5_server = <%= node[:authconfig][:kerberos][:kdcserver] %>
 ldap_tls_cacertdir = <%= node[:authconfig][:ldap][:cacertdir] %>
 <% if node[:authconfig][:ldap][:starttls] -%>
-	ldap_id_use_start_tls = True
+ldap_id_use_start_tls = True
 <% else -%>
-	ldap_id_use_start_tls = False
+ldap_id_use_start_tls = False
 <% end -%>
 <% if node[:authconfig][:sssd][:cachecreds] -%>
-	cache_credentials = True
+cache_credentials = True
 <% else -%>
-	cache_credentials = False
+cache_credentials = False
 <% end -%>
 <% unless node[:authconfig][:ldap][:reqcert] -%>
-	ldap_tls_reqcert = never
+ldap_tls_reqcert = never
 <% end -%>
 <% if node[:authconfig][:ldap][:disable_tls] -%>
-	ldap_auth_disable_tls_never_use_in_production = true
+ldap_auth_disable_tls_never_use_in_production = true
 <% end -%>
 <% if node[:authconfig][:ldap][:bindpw] != '' -%>
-	ldap_default_authtok_type = password
-	ldap_default_authtok = <%= node[:authconfig][:ldap][:bindpw] %>
+ldap_default_authtok_type = password
+ldap_default_authtok = <%= node[:authconfig][:ldap][:bindpw] %>
 <% end -%>
 
 <% if node[:authconfig][:ldap][:server_is_ad] -%>
