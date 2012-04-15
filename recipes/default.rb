@@ -65,18 +65,8 @@ if node[:platform_version].to_i == 6
 elsif node[:platform_version].to_i == 5
         template "/etc/ldap.conf" do
                 source "ldap.conf.erb"
-                mode 0600
+                mode 0644
                 owner "root"
                 group "root"
         end
-#        template "/etc/krb5.conf" do
-#                source "krb5.conf.erb"
-#                mode 0600
-#                owner "root"
-#                group "root"
-#                variables(
-#                        :bind_dn=>node['authconfig']['ldap']['dnbase']
-#                )
-#        end
-
 end
