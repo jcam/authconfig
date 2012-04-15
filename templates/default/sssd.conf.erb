@@ -69,27 +69,61 @@ reconnection_retries = 3
 # enumerate = False
 # entry_cache_timeout = 5400
 
-# Example LDAP domain where the LDAP server is an Active Directory server.
+[domain/default]
 
- [domain/AD]
- description = LDAP domain with AD server
- enumerate = false
- min_id = 1000
+ldap_uri = <%= node[:authconfig][:ldap][:server] %>
+<% if node[:authconfig][:ldap][:dnbase] != '' -%>
+	ldap_search_base = <%= node[:authconfig][:ldap][:dnbase] %>
+<% end -%>
+<% if node[:authconfig][:ldap][:dnbind] != '' -%>
+	ldap_default_bind_dn = <%= node[:authconfig][:ldap][:dnbind] %>
+<% end -%>
+<% if node[:authconfig][:ldap][:rfc2307bis] -%>
+	ldap_schema = rfc2307bis
+<% else -%>
+	ldap_schema = rfc2307
+<% end -%>
+<% if node[:authconfig][:ldap][:enable] -%>
+	id_provider = ldap
+<% else -%>
+	id_provider = local
+<% end -%>
+<% if node[:authconfig][:ldap][:auth] -%>
+	auth_provider = ldap
+<% elsif node[:authconfig][:kerberos][:enable] -%>
+	auth_provider = krb5
+<% else -%>
+	auth_provider = none
+<% end -%>
+krb5_realm = <%= node[:authconfig][:kerberos][:realm] %>
+krb5_server = <%= node[:authconfig][:kerberos][:kdcserver] %>
+ldap_tls_cacertdir = <%= node[:authconfig][:ldap][:cacertdir] %>
+<% if node[:authconfig][:ldap][:starttls] -%>
+	ldap_id_use_start_tls = True
+<% else -%>
+	ldap_id_use_start_tls = False
+<% end -%>
+<% if node[:authconfig][:sssd][:cachecreds] -%>
+	cache_credentials = True
+<% else -%>
+	cache_credentials = False
+<% end -%>
+<% unless node[:authconfig][:ldap][:reqcert] -%>
+	ldap_tls_reqcert = never
+<% end -%>
+<% if node[:authconfig][:ldap][:disable_tls] -%>
+	ldap_auth_disable_tls_never_use_in_production = true
+<% end -%>
+<% if node[:authconfig][:ldap][:bindpw] != '' -%>
+	ldap_default_authtok_type = password
+	ldap_default_authtok = <%= node[:authconfig][:ldap][:bindpw] %>
+<% end -%>
 
- id_provider = ldap
- auth_provider = ldap
-# ldap_uri = ldap://your.ad.server.com
- ldap_uri = <%=@ldap_uri%>
- ldap_schema = rfc2307bis
-# ldap_default_bind_dn = cn=Administrator,cn=Users,dc=example,dc=com
- ldap_default_bind_dn = <%=@bind_dn%>
- ldap_default_authtok_type = password
-# ldap_default_authtok = YOUR_PASSWORD
- ldap_default_authtok = <%=@bind_pw%>
-
-ldap_tls_cacert = /etc/pki/tls/certs/ca-bundle.crt
-ldap_tls_cacertdir = /etc/pki/tls/certs
-ldap_schema = rfc2307bis
+<% if node[:authconfig][:ldap][:server_is_ad] -%>
+enumerate = false
+min_id = 1000
+#ldap_tls_cacert = /etc/pki/tls/certs/ca-bundle.crt
+#ldap_tls_cacertdir = /etc/pki/tls/certs
 ldap_user_principal = userPrincipalName
 ldap_user_fullname = displayName
 ldap_user_name = sAMAccountName
@@ -100,7 +134,6 @@ ldap_user_principal = userPrincipalName
 ldap_group_object_class = group
 ldap_force_upper_case_realm = True
 
-
 # nss_map_objectclass posixAccount User
 # nss_map_objectclass shadowAccount User
 # nss_map_attribute uid sAMAccountName
@@ -109,31 +142,11 @@ ldap_force_upper_case_realm = True
 # nss_map_objectclass posixGroup Group
 # pam_login_attribute sAMAccountName
 
-# ldap_user_object_class = person
-# ldap_user_name = msSFU30Name
 # ldap_user_uid_number = msSFU30UidNumber
 # ldap_user_gid_number = msSFU30GidNumber
-# ldap_user_home_directory = msSFU30HomeDirectory
-# ldap_user_shell = msSFU30LoginShell
-# ldap_user_principal = userPrincipalName
-# ldap_group_object_class = group
 # ldap_group_name = msSFU30Name
 # ldap_group_gid_number = msSFU30GidNumber
-# ldap_force_upper_case_realm = True
 
-# [domain/default]
-# auth_provider = ldap
-# ldap_group_member = uniqueMember
-# ldap_schema = rfc2307bis
-# ldap_id_use_start_tls = False
-# chpass_provider = ldap
-# cache_credentials = True
-# krb5_realm = EXAMPLE.COM
-# ldap_search_base = dc=atl,dc=setg
-# id_provider = ldap
-# ldap_uri = ldap://ldap.ops.atl.setg/
-# krb5_kdcip = kerberos.example.com
-# ldap_tls_cacertdir = /etc/openldap/cacerts
-# ldap_auth_disable_tls_never_use_in_production = true
-# ldap_tls_reqcert = never
-
+<% else -%>
+ldap_group_member = uniqueMember
+<% end -%>

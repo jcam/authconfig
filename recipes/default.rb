@@ -78,11 +78,6 @@ if node[:platform_version].to_i == 6
 		mode 0600
 		owner "root"
 		group "root"
-		variables(
-			:ldap_uri=>node['authconfig']['ldap']['server'],
-			:bind_dn=>node['authconfig']['ldap']['dnbase'],
-			:bind_pw=>node['authconfig']['ldap']['basepw']
-		)
 		notifies :run, "execute[restorecon /etc/sssd/sssd.conf]", :immediately
 		notifies :restart, "service[sssd]"
 	end
@@ -102,7 +97,7 @@ elsif node[:platform_version].to_i == 5
                         :ldap_uri=>node['authconfig']['ldap']['server'],
                         :bind_dn=>node['authconfig']['ldap']['dnbind'],
                         :base_dn=>node['authconfig']['ldap']['dnbase'],
-                        :bind_pw=>node['authconfig']['ldap']['basepw']
+                        :bind_pw=>node['authconfig']['ldap']['bindpw']
                 )
         end
 #        template "/etc/krb5.conf" do
