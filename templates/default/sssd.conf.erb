@@ -70,7 +70,7 @@ reconnection_retries = 3
 # entry_cache_timeout = 5400
 
 [domain/default]
-
+enumerate = true
 ldap_uri = <%= node[:authconfig][:ldap][:server] %>
 <% if node[:authconfig][:ldap][:dnbase] != '' -%>
 ldap_search_base = <%= node[:authconfig][:ldap][:dnbase] %>
@@ -120,7 +120,6 @@ ldap_default_authtok = <%= node[:authconfig][:ldap][:bindpw] %>
 <% end -%>
 
 <% if node[:authconfig][:ldap][:server_is_ad] -%>
-enumerate = true
 min_id = 1000
 #ldap_tls_cacert = /etc/pki/tls/certs/ca-bundle.crt
 #ldap_tls_cacertdir = /etc/pki/tls/certs
