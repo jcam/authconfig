@@ -20,11 +20,12 @@ services = nss, pam
 	<% numdomains = dnbasearr.count -%>
 domains = domain1<% 2.upto(numdomains) do |count| -%>
 <%= ",domain#{count}" -%>
-<% end %>
+<% end -%>
 <% else -%>
 	<% numdomains = 1 -%>
 domains = domain1
 <% end -%>
+
 [nss]
 # The following prevents SSSD from searching for the root user/group in
 # all domains (you can add here a comma-separated list of system accounts that
