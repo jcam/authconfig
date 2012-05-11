@@ -18,9 +18,11 @@ services = nss, pam
 <% if node[:authconfig][:ldap][:dnbase] != '' -%>
 	<% dnbasearr = node[:authconfig][:ldap][:dnbase].split(';') -%>
 	<% numdomains = dnbasearr.count -%>
-domains = domain1<% 2.upto(numdomains) do |count| -%>
-<%= ",domain#{count}" -%>
-<% end -%>
+	<% domainlist = "domain1" -%>
+	<% 2.upto(numdomains) do |count| -%>
+		<% domainlist += ",domain#{count}" -%>
+	<% end -%>
+domains = <%= domainlist %>
 <% else -%>
 	<% numdomains = 1 -%>
 domains = domain1
