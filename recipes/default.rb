@@ -60,13 +60,17 @@ if node[:platform_version].to_i == 6
 		owner "root"
 		group "root"
 		notifies :run, "execute[restorecon /etc/sssd/sssd.conf]", :immediately
-		notifies :restart, "service[sssd]"
+		notifies :restart, "service[sssd]", :immediately
 	end
 elsif node[:platform_version].to_i == 5
-        template "/etc/ldap.conf" do
-                source "ldap.conf.erb"
-                mode 0644
-                owner "root"
-                group "root"
-        end
+	execute "sleep 60" do
+		action :nothing
+	end
+	template "/etc/ldap.conf" do
+		source "ldap.conf.erb"
+		mode 0644
+		owner "root"
+		group "root"
+		notifies :run, "execute[sleep 60]", :immediately
+	end
 end
