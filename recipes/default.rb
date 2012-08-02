@@ -51,17 +51,25 @@ if node[:platform_version].to_i == 6
 		supports :status => true, :restart => true, :reload => true
 	end
 
+	execute "clean_sss_db" do
+		command "rm -f /var/lib/sss/db/*"
+		action :nothing
+	end
+
 	execute "restorecon /etc/sssd/sssd.conf" do
 		action :nothing
 	end
+
 	template "/etc/sssd/sssd.conf" do
 		source "sssd.conf.erb"
 		mode 0600
 		owner "root"
 		group "root"
+		notifies :run, "execute[clean_sss_db]", :immediately
 		notifies :run, "execute[restorecon /etc/sssd/sssd.conf]", :immediately
 		notifies :restart, "service[sssd]", :immediately
 	end
+
 elsif node[:platform_version].to_i == 5
 	#ldap users don't work immediately, sleeping 60 seems to fix. TODO Fix this hack
 	execute "sleep 60" do
