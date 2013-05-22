@@ -76,6 +76,7 @@ ldap_sudo_smart_refresh_interval=<%= node[:authconfig][:ldap][:sudo][:smart_refr
 <% end -%>
 <% if node[:authconfig][:ldap][:auth] -%>
 auth_provider = ldap
+chpass_provider = ldap
 <% elsif node[:authconfig][:kerberos][:enable] -%>
 auth_provider = krb5
 krb5_realm = <%= node[:authconfig][:kerberos][:realm] %>
