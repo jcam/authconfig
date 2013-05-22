@@ -68,7 +68,7 @@ id_provider = ldap
 <% else -%>
 id_provider = local
 <% end -%>
-<% if node[:authconfig][:ldap][:sudo] -%>
+<% if node[:authconfig][:ldap][:sudo][:enable] -%>
 sudo_provider = ldap
 ldap_sudo_search_base = <%= node[:authconfig][:ldap][:sudo][:basedn] %>
 ldap_sudo_full_refresh_interval=<%= node[:authconfig][:ldap][:sudo][:full_refresh] %>
