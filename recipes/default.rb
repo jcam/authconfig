@@ -47,6 +47,10 @@ template "/etc/authconfig/arguments" do
 end
 
 if node[:platform_version].to_i == 6
+	package "sssd" do
+		action :install
+	end
+
 	service "sssd" do
 		supports :status => true, :restart => true, :reload => true
 	end
