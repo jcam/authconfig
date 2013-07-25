@@ -82,7 +82,8 @@ auth_provider = krb5
 krb5_realm = <%= node[:authconfig][:kerberos][:realm] %>
 krb5_server = <%= node[:authconfig][:kerberos][:kdcserver] %>
 <% else -%>
-auth_provider = none
+# Comment out auth provider to default to locals
+#auth_provider = none
 <% end -%>
 ldap_tls_cacertdir = <%= node[:authconfig][:ldap][:cacertdir] %>
 <% if node[:authconfig][:ldap][:starttls] -%>
