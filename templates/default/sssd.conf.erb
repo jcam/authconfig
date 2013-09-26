@@ -7,7 +7,11 @@ reconnection_retries = 3
 
 # If a back end is particularly slow you can raise this timeout here
 sbus_timeout = 30
+<% if node[:authconfig][:ldap][:sudo][:enable] -%>
 services = nss, pam, sudo
+<% else -%>
+services = nss, pam
+<% end -%>
 
 # SSSD will not start if you do not configure any domains.
 # Add new domain configurations as [domain/<NAME>] sections, and
@@ -28,8 +32,10 @@ domains = <%= domainlist %>
 domains = domain1
 <% end -%>
 
+<% if node[:authconfig][:ldap][:sudo][:enable] -%>
 [sudo]
 
+<% end -%>
 [nss]
 # The following prevents SSSD from searching for the root user/group in
 # all domains (you can add here a comma-separated list of system accounts that
