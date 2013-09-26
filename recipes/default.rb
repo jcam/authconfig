@@ -43,7 +43,7 @@ template "/etc/authconfig/arguments" do
 	owner "root"
 	group "root"
 	notifies :run, "execute[authconfig-update]", :immediately
-	notifies :reload, "service[autofs]"
+	notifies :reload, "service[autofs]" if node['authconfig']['use_autofs']
 end
 
 if node[:platform_version].to_i == 6
