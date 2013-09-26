@@ -46,6 +46,12 @@ template "/etc/authconfig/arguments" do
 	notifies :reload, "service[autofs]" if node['authconfig']['use_autofs']
 end
 
+if node['authconfig']['ldap']['enable']
+  package 'pam_ldap' do
+    action :install
+  end
+end
+
 if node[:platform_version].to_i == 6
 	package "sssd" do
 		action :install
