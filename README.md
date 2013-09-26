@@ -4,7 +4,7 @@ Description
 Manages authentication configuration CentOS / RHEL 5.x.
 
 Auth libraries supported in this recipe:
-winbind, nis, wins, ldap, kerberos, hesiod, smartcard, and more...
+winbind, nis, wins, ldap, kerberos, hesiod, smartcard, ipav2 & sssd
 
 Requirements
 ============
