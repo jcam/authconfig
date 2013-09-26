@@ -52,6 +52,12 @@ if node['authconfig']['ldap']['enable']
   end
 end
 
+if node['authconfig']['kerberos']['enable']
+  package 'pam_krb5' do
+    action :install
+  end
+end
+
 if node[:platform_version].to_i == 6
 	package "sssd" do
 		action :install
