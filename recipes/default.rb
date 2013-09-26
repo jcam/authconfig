@@ -20,6 +20,11 @@
 # limitations under the License.
 #
 
+# Ensure we have the latest package build on the node
+package 'authconfig' do
+  action :install
+end
+
 # Run the authconfig script, only on arguments file change
 execute "authconfig-update" do
 	command "/bin/cat /etc/authconfig/arguments | /usr/bin/xargs /usr/sbin/authconfig --updateall"
