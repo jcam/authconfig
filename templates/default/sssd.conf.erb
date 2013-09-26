@@ -7,7 +7,7 @@ reconnection_retries = 3
 
 # If a back end is particularly slow you can raise this timeout here
 sbus_timeout = 30
-services = nss, pam
+services = nss, pam, sudo
 
 # SSSD will not start if you do not configure any domains.
 # Add new domain configurations as [domain/<NAME>] sections, and
@@ -27,6 +27,8 @@ domains = <%= domainlist %>
 	<% numdomains = 1 -%>
 domains = domain1
 <% end -%>
+
+[sudo]
 
 [nss]
 # The following prevents SSSD from searching for the root user/group in
@@ -66,15 +68,23 @@ id_provider = ldap
 <% else -%>
 id_provider = local
 <% end -%>
+<% if node[:authconfig][:ldap][:sudo][:enable] -%>
+sudo_provider = ldap
+ldap_sudo_search_base = <%= node[:authconfig][:ldap][:sudo][:basedn] %>
+ldap_sudo_full_refresh_interval=<%= node[:authconfig][:ldap][:sudo][:full_refresh] %>
+ldap_sudo_smart_refresh_interval=<%= node[:authconfig][:ldap][:sudo][:smart_refresh] %>
+<% end -%>
 <% if node[:authconfig][:ldap][:auth] -%>
 auth_provider = ldap
+chpass_provider = ldap
 <% elsif node[:authconfig][:kerberos][:enable] -%>
 auth_provider = krb5
-<% else -%>
-auth_provider = none
-<% end -%>
 krb5_realm = <%= node[:authconfig][:kerberos][:realm] %>
 krb5_server = <%= node[:authconfig][:kerberos][:kdcserver] %>
+<% else -%>
+# Comment out auth provider to default to locals
+#auth_provider = none
+<% end -%>
 ldap_tls_cacertdir = <%= node[:authconfig][:ldap][:cacertdir] %>
 <% if node[:authconfig][:ldap][:starttls] -%>
 ldap_id_use_start_tls = True
