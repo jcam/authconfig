@@ -48,7 +48,7 @@ reconnection_retries = 3
 
 <% 1.upto(numdomains) do |count| -%>
 [domain/domain<%= count %>]
-enumerate = true
+enumerate = false
 ldap_uri = <%= node[:authconfig][:ldap][:server] %>
 <% if node[:authconfig][:ldap][:dnbase] != '' -%>
 ldap_search_base = <%= dnbasearr[count-1] %>
