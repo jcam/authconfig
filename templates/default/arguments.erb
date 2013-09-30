@@ -166,7 +166,7 @@
 		--disablecachecreds
 	<% end -%>
 <% end -%>
-<% if node[:authconfig][:cacheinfo] -%>
+<% if node[:authconfig][:cachecreds] -%>
 	--enablecache
 <% else -%>
 	--disablecache
