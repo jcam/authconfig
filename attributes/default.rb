@@ -49,6 +49,7 @@ default['authconfig']['smartcard']['removalaction'] = ''
 default['authconfig']['fingerprint']['enable'] = false
 default['authconfig']['kerberos']['enable'] = false
 default['authconfig']['kerberos']['kdcserver'] = 'kerberos.example.com'
+default['authconfig']['kerberos']['kdcbackupserver'] = ''
 default['authconfig']['kerberos']['adminserver'] = 'kerberos.example.com'
 default['authconfig']['kerberos']['realm'] = 'EXAMPLE.COM'
 default['authconfig']['kerberos']['kdcdns'] = false
