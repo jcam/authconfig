@@ -83,4 +83,5 @@ default['authconfig']['localauth'] = true
 default['authconfig']['pamaccess'] = false
 default['authconfig']['sysnetauth'] = false
 default['authconfig']['mkhomedir'] = false
-default['authconfig']['use_autofs'] = true
+default['authconfig']['autofs']['enable'] = false
+default['authconfig']['autofs']['sssdservice'] = false

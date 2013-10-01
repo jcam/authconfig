@@ -26,6 +26,10 @@ execute "authconfig-update" do
 	action :nothing
 end
 
+package 'autofs' do
+  action :nothing
+end
+
 service "autofs" do
 	supports :status => true, :restart => true, :reload => true
 end
@@ -42,8 +46,11 @@ template "/etc/authconfig/arguments" do
 	mode 0440
 	owner "root"
 	group "root"
-	notifies :run, "execute[authconfig-update]", :immediately
-	notifies :reload, "service[autofs]" if node['authconfig']['use_autofs']
+  if node['authconfig']['autofs']['enable']
+    notifies :install, "package[autofs]"
+    notifies :reload, "service[autofs]"
+  end
+  notifies :run, "execute[authconfig-update]"
 end
 
 if node['authconfig']['ldap']['enable']
@@ -75,9 +82,9 @@ if node[:platform_version].to_i == 6
 		mode 0600
 		owner "root"
 		group "root"
-		notifies :run, "execute[clean_sss_db]", :immediately
-		notifies :run, "execute[restorecon /etc/sssd/sssd.conf]", :immediately
-		notifies :restart, "service[sssd]", :immediately
+		notifies :run, "execute[clean_sss_db]"
+		notifies :run, "execute[restorecon /etc/sssd/sssd.conf]"
+		notifies :restart, "service[sssd]"
 	end
 
 elsif node[:platform_version].to_i == 5
@@ -90,6 +97,6 @@ elsif node[:platform_version].to_i == 5
 		mode 0644
 		owner "root"
 		group "root"
-		notifies :run, "execute[sleep 60]", :immediately
+		notifies :run, "execute[sleep 60]"
 	end
 end
