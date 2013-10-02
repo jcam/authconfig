@@ -46,11 +46,9 @@ template "/etc/authconfig/arguments" do
 	mode 0440
 	owner "root"
 	group "root"
-  if node['authconfig']['autofs']['enable']
-    notifies :install, "package[autofs]"
-    notifies :reload, "service[autofs]"
-  end
+  notifies :install, "package[autofs]" if node['authconfig']['autofs']['enable']
   notifies :run, "execute[authconfig-update]"
+  notifies :reload, "service[autofs]"  if node['authconfig']['autofs']['enable']
 end
 
 if node['authconfig']['ldap']['enable']
