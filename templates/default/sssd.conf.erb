@@ -28,6 +28,10 @@ domains = <%= domainlist %>
 domains = domain1
 <% end -%>
 
+<% if node[:authconfig][:autofs][:enable] -%>
+[autofs]
+
+<% end -%>
 <% if node[:authconfig][:ldap][:sudo][:enable] -%>
 [sudo]
 
