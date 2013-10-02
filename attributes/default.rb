@@ -50,6 +50,7 @@ default['authconfig']['fingerprint']['enable'] = false
 default['authconfig']['kerberos']['enable'] = false
 default['authconfig']['kerberos']['kdcserver'] = 'kerberos.example.com'
 default['authconfig']['kerberos']['adminserver'] = 'kerberos.example.com'
+default['authconfig']['kerberos']['passwdserver'] = node[:authconfig][:kerberos][:adminserver]
 default['authconfig']['kerberos']['realm'] = 'EXAMPLE.COM'
 default['authconfig']['kerberos']['kdcdns'] = false
 default['authconfig']['kerberos']['realmdns'] = false

@@ -79,8 +79,10 @@ auth_provider = ldap
 chpass_provider = ldap
 <% elsif node[:authconfig][:kerberos][:enable] -%>
 auth_provider = krb5
+chpass_provider = krb5
 krb5_realm = <%= node[:authconfig][:kerberos][:realm] %>
 krb5_server = <%= node[:authconfig][:kerberos][:kdcserver] %>
+krb5_kpasswd = <%= node[:authconfig][:kerberos][:passwdserver] %>
 <% else -%>
 # Comment out auth provider to default to locals
 #auth_provider = none
