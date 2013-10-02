@@ -65,6 +65,8 @@ ldap_schema = rfc2307
 <% end -%>
 <% if node[:authconfig][:ldap][:enable] -%>
 id_provider = ldap
+<% elsif node[:authconfig][:ad][:enable] -%>
+id_provider = ad
 <% else -%>
 id_provider = local
 <% end -%>
@@ -77,13 +79,24 @@ ldap_sudo_smart_refresh_interval=<%= node[:authconfig][:ldap][:sudo][:smart_refr
 <% if node[:authconfig][:ldap][:auth] -%>
 auth_provider = ldap
 chpass_provider = ldap
-<% elsif node[:authconfig][:kerberos][:enable] -%>
+<% elsif node[:authconfig][:kerberos][:auth] -%>
 auth_provider = krb5
-krb5_realm = <%= node[:authconfig][:kerberos][:realm] %>
-krb5_server = <%= node[:authconfig][:kerberos][:kdcserver] %>
+<% elsif node[:authconfig][:ad][:auth] -%>
+auth_provider = ad
+access_provider = ad
+chpass_provider = ad
 <% else -%>
 # Comment out auth provider to default to locals
 #auth_provider = none
+<% end -%>
+<% if node[:authconfig][:kerberos][:enable] -%>
+krb5_realm = <%= node[:authconfig][:kerberos][:realm] %>
+krb5_server = <%= node[:authconfig][:kerberos][:kdcserver] %>
+<% end -%>
+<% if node[:authconfig][:ad][:enable] -%>
+ad_server = default[:authconfig][:ad][:server]
+ad_hsotname = default[:authconfig][:ad][:hostname]
+ad_domain = default[:authconfig][:ad][:domain]
 <% end -%>
 ldap_tls_cacertdir = <%= node[:authconfig][:ldap][:cacertdir] %>
 <% if node[:authconfig][:ldap][:starttls] -%>
