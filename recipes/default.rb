@@ -93,7 +93,6 @@ if node[:platform_version].to_i == 6
 		notifies :reload, "ohai[reload]"
 	end
 
-
 elsif node[:platform_version].to_i == 5
 	#ldap users don't work immediately, sleeping 60 seems to fix. TODO Fix this hack
 	execute "sleep 60" do
