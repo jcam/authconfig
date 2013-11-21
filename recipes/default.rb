@@ -29,7 +29,7 @@ end
 #user changes require reloading of ohai for later recipes to use them
 #TODO  only load certain plugins? (passwd)
 ohai "reload" do
-		action :reload
+		action :nothing
 end
 
 service "autofs" do
@@ -107,5 +107,4 @@ elsif node[:platform_version].to_i == 5
 		notifies :run, "execute[sleep 60]", :immediately
 		notifies :reload, "ohai[reload]"
 	end
-
 end
