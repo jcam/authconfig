@@ -59,6 +59,14 @@ if node['authconfig']['kerberos']['enable']
 end
 
 if node[:platform_version].to_i == 6
+	package "pam_krb5" do
+		action :install
+	end
+
+	package "krb5-workstation" do
+		action :install
+	end
+
 	package "sssd" do
 		action :install
 	end
