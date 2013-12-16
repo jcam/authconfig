@@ -27,7 +27,7 @@ execute "authconfig-update" do
 end
 
 package 'autofs' do
-  action :nothing
+	action :nothing
 end
 
 #user changes require reloading of ohai for later recipes to use them
@@ -52,15 +52,15 @@ template "/etc/authconfig/arguments" do
 	mode 0440
 	owner "root"
 	group "root"
-  notifies :install, "package[autofs]" if node['authconfig']['autofs']['enable']
-  notifies :run, "execute[authconfig-update]", :immediately
-  notifies :reload, "service[autofs]", :immediately if node['authconfig']['autofs']['enable']
+	notifies :install, "package[autofs]" if node['authconfig']['autofs']['enable']
+	notifies :run, "execute[authconfig-update]", :immediately
+	notifies :reload, "service[autofs]", :immediately if node['authconfig']['autofs']['enable']
 end
 
 if node['authconfig']['kerberos']['enable']
-  package 'pam_krb5' do
-    action :install
-  end
+	package 'pam_krb5' do
+		action :install
+	end
 
 	package "krb5-workstation" do
 		action :install
@@ -68,11 +68,11 @@ if node['authconfig']['kerberos']['enable']
 end
 
 if node[:platform_version].to_i == 6
-  if node['authconfig']['ldap']['enable']
-    package 'pam_ldap' do
-      action :install
-    end
-  end
+	if node['authconfig']['ldap']['enable']
+		package 'pam_ldap' do
+			action :install
+		end
+	end
 
 	package "sssd" do
 		action :install
@@ -106,13 +106,13 @@ elsif node[:platform_version].to_i == 5
 	#ldap users don't work immediately, sleeping 60 seems to fix. TODO Fix this hack
 	execute "sleep 60" do
 		action :nothing
-  end
+	end
 
-  if node['authconfig']['ldap']['enable']
-    package 'nss_ldap' do
-      action :install
-    end
-  end
+	if node['authconfig']['ldap']['enable']
+		package 'nss_ldap' do
+			action :install
+		end
+	end
 
 	template "/etc/ldap.conf" do
 		source "ldap.conf.erb"
