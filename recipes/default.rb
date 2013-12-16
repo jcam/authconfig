@@ -57,27 +57,22 @@ template "/etc/authconfig/arguments" do
   notifies :reload, "service[autofs]", :immediately if node['authconfig']['autofs']['enable']
 end
 
+if node['authconfig']['kerberos']['enable']
+  package 'pam_krb5' do
+    action :install
+  end
+
+	package "krb5-workstation" do
+		action :install
+	end
+end
+
 if node[:platform_version].to_i == 6
   if node['authconfig']['ldap']['enable']
     package 'pam_ldap' do
       action :install
     end
   end
-
-if node['authconfig']['kerberos']['enable']
-  package 'pam_krb5' do
-    action :install
-  end
-end
-
-if node[:platform_version].to_i == 6
-	package "krb5-workstation" do
-		action :install
-	end
-
-	package "pam_krb5" do
-		action :install
-	end
 
 	package "sssd" do
 		action :install
@@ -108,18 +103,6 @@ if node[:platform_version].to_i == 6
 	end
 
 elsif node[:platform_version].to_i == 5
-	package "krb5-workstation" do
-		action :install
-	end
-
-	package "pam_krb5" do
-		action :install
-	end
-
-	package "nss_ldap" do
-		action :install
-	end
-
 	#ldap users don't work immediately, sleeping 60 seems to fix. TODO Fix this hack
 	execute "sleep 60" do
 		action :nothing
