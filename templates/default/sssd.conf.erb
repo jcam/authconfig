@@ -7,11 +7,7 @@ reconnection_retries = 3
 
 # If a back end is particularly slow you can raise this timeout here
 sbus_timeout = 30
-<% if node[:authconfig][:ldap][:sudo][:enable] -%>
-services = nss, pam, sudo
-<% else -%>
-services = nss, pam
-<% end -%>
+services = nss, pam<% if node[:authconfig][:ldap][:sudo][:enable] -%>, sudo<% end -%><% if node[:authconfig][:autofs][:sssdservice] -%>, autofs<% end -%>
 
 # SSSD will not start if you do not configure any domains.
 # Add new domain configurations as [domain/<NAME>] sections, and
@@ -32,6 +28,10 @@ domains = <%= domainlist %>
 domains = domain1
 <% end -%>
 
+<% if node[:authconfig][:autofs][:enable] -%>
+[autofs]
+
+<% end -%>
 <% if node[:authconfig][:ldap][:sudo][:enable] -%>
 [sudo]
 
