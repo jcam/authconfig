@@ -85,8 +85,10 @@ auth_provider = ldap
 chpass_provider = ldap
 <% elsif node[:authconfig][:kerberos][:enable] -%>
 auth_provider = krb5
+chpass_provider = krb5
 krb5_realm = <%= node[:authconfig][:kerberos][:realm] %>
 krb5_server = <%= node[:authconfig][:kerberos][:kdcserver] %>
+krb5_kpasswd = <%= node[:authconfig][:kerberos][:passwdserver] %>
 <% unless node[:authconfig][:kerberos][:kdcbackupserver].empty? -%>
 krb5_backup_server = <%= node[:authconfig][:kerberos][:kdcbackupserver] %>
 <% end -%>
