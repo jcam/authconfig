@@ -46,11 +46,12 @@ template "/etc/authconfig/arguments" do
 	notifies :reload, "service[autofs]" if node['authconfig']['use_autofs']
 end
 
-if node['authconfig']['ldap']['enable']
-  package 'pam_ldap' do
-    action :install
+if node[:platform_version].to_i == 6
+  if node['authconfig']['ldap']['enable']
+    package 'pam_ldap' do
+      action :install
+    end
   end
-end
 
 if node['authconfig']['kerberos']['enable']
   package 'pam_krb5' do
@@ -90,7 +91,14 @@ elsif node[:platform_version].to_i == 5
 	#ldap users don't work immediately, sleeping 60 seems to fix. TODO Fix this hack
 	execute "sleep 60" do
 		action :nothing
-	end
+  end
+
+  if node['authconfig']['ldap']['enable']
+    package 'nss_ldap' do
+      action :install
+    end
+  end
+
 	template "/etc/ldap.conf" do
 		source "ldap.conf.erb"
 		mode 0644
