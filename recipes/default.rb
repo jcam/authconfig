@@ -47,8 +47,8 @@ template "/etc/authconfig/arguments" do
 	owner "root"
 	group "root"
   notifies :install, "package[autofs]" if node['authconfig']['autofs']['enable']
-  notifies :run, "execute[authconfig-update]"
-  notifies :reload, "service[autofs]"  if node['authconfig']['autofs']['enable']
+  notifies :run, "execute[authconfig-update]", :immediately
+  notifies :reload, "service[autofs]", :immediately if node['authconfig']['autofs']['enable']
 end
 
 if node[:platform_version].to_i == 6
@@ -87,9 +87,9 @@ if node[:platform_version].to_i == 6
 		mode 0600
 		owner "root"
 		group "root"
-		notifies :run, "execute[clean_sss_db]"
-		notifies :run, "execute[restorecon /etc/sssd/sssd.conf]"
-		notifies :restart, "service[sssd]"
+		notifies :run, "execute[clean_sss_db]", :immediately
+		notifies :run, "execute[restorecon /etc/sssd/sssd.conf]", :immediately
+		notifies :restart, "service[sssd]", :immediately
 	end
 
 elsif node[:platform_version].to_i == 5
@@ -109,6 +109,6 @@ elsif node[:platform_version].to_i == 5
 		mode 0644
 		owner "root"
 		group "root"
-		notifies :run, "execute[sleep 60]"
+		notifies :run, "execute[sleep 60]", :immediately
 	end
 end
