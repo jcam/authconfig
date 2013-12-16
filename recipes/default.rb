@@ -33,7 +33,7 @@ end
 #user changes require reloading of ohai for later recipes to use them
 #TODO  only load certain plugins? (passwd)
 ohai "reload" do
-		action :nothing
+	action :nothing
 end
 
 service "autofs" do
