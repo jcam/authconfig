@@ -30,6 +30,12 @@ package 'autofs' do
   action :nothing
 end
 
+#user changes require reloading of ohai for later recipes to use them
+#TODO  only load certain plugins? (passwd)
+ohai "reload" do
+		action :nothing
+end
+
 service "autofs" do
 	supports :status => true, :restart => true, :reload => true
 end
@@ -90,6 +96,7 @@ if node[:platform_version].to_i == 6
 		notifies :run, "execute[clean_sss_db]", :immediately
 		notifies :run, "execute[restorecon /etc/sssd/sssd.conf]", :immediately
 		notifies :restart, "service[sssd]", :immediately
+		notifies :reload, "ohai[reload]", :immediately
 	end
 
 elsif node[:platform_version].to_i == 5
@@ -110,5 +117,6 @@ elsif node[:platform_version].to_i == 5
 		owner "root"
 		group "root"
 		notifies :run, "execute[sleep 60]", :immediately
+		notifies :reload, "ohai[reload]", :immediately
 	end
 end
