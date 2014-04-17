@@ -98,10 +98,8 @@ if node[:platform_version].to_i == 6
 		group "root"
 		notifies :run, "execute[clean_sss_db]", :immediately
 		notifies :run, "execute[restorecon /etc/sssd/sssd.conf]", :immediately
-		# Restart sssd only if actually used
-		if node['authconfig']['ldap]['enable']
-			notifies :restart, "service[sssd]", :immediately
-		elsif node['authconfig']['kerberos']['enable']
+		# Restart sssd only if LDAP actually enables it
+		if node['authconfig']['ldap']['enable']
 			notifies :restart, "service[sssd]", :immediately
 		end
 
