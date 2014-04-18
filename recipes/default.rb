@@ -104,7 +104,6 @@ if node[:platform_version].to_i == 6
 		end
 
 		notifies :reload, "ohai[reload]", :immediately
-
 	end
 
 elsif node[:platform_version].to_i == 5
