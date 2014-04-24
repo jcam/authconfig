@@ -98,7 +98,11 @@ if node[:platform_version].to_i == 6
 		group "root"
 		notifies :run, "execute[clean_sss_db]", :immediately
 		notifies :run, "execute[restorecon /etc/sssd/sssd.conf]", :immediately
-		notifies :restart, "service[sssd]", :immediately
+		# Restart sssd only if LDAP actually enables it
+		if node['authconfig']['ldap']['enable']
+			notifies :restart, "service[sssd]", :immediately
+		end
+
 		notifies :reload, "ohai[reload]", :immediately
 	end
 
