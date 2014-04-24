@@ -23,6 +23,11 @@
 # Ensure we have the latest package build on the node
 package 'authconfig' do
   action :install
+# Ensure we have the latest package build on the node for ipav2 to work
+if node['authconfig']['ipav2']['enable'] && node[:platform_version].to_i == 6
+  package 'authconfig' do
+    action :upgrade
+  end
 end
 
 # Run the authconfig script, only on arguments file change

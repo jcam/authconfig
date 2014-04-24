@@ -127,6 +127,7 @@
 <% if node[:authconfig][:winbind][:join] && false -%>
 	--winbindjoin=<%= node[:authconfig][:winbind][:join] %>
 <% end -%>
+<% if node[:platform_version].to_i == 6 -%>
 <% if node[:authconfig][:ipav2][:enable] -%>
     --enableipav2
     --ipav2domain=<%= node[:authconfig][:ipav2][:domain] %>
@@ -140,6 +141,7 @@
     --ipav2join=<%= node[:authconfig][:ipav2][:ipav2join] %>
 <% else -%>
     --disableipav2
+<% end %>
 <% end %>
 <% if node[:authconfig][:wins][:enable] -%>
 	--enablewins
