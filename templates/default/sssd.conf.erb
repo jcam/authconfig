@@ -114,7 +114,7 @@ ldap_tls_reqcert = never
 ldap_auth_disable_tls_never_use_in_production = true
 <% end -%>
 <% if node[:authconfig][:ldap][:bindpw] != '' -%>
-ldap_default_authtok_type = password
+ldap_default_authtok_type = <%= node[:authconfig][:ldap][:authtok_type] %>
 ldap_default_authtok = <%= node[:authconfig][:ldap][:bindpw] %>
 <% end -%>
 
