@@ -64,6 +64,12 @@ ldap_search_base = <%= dnbasearr[count-1] %>
 <% if node[:authconfig][:ldap][:dnbind] != '' -%>
 ldap_default_bind_dn = <%= node[:authconfig][:ldap][:dnbind] %>
 <% end -%>
+<% if node[:authconfig][:ldap][:user_search] != '' -%>
+ldap_user_search_base = <%= node[:authconfig][:ldap][:user_search] %>
+<% end -%>
+<% if node[:authconfig][:ldap][:group_search] != '' -%>
+ldap_group_search_base = <%= node[:authconfig][:ldap][:group_search] %>
+<% end -%>
 <% if node[:authconfig][:ldap][:rfc2307bis] -%>
 ldap_schema = rfc2307bis
 <% else -%>
