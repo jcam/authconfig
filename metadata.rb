@@ -1,3 +1,4 @@
+name             "authconfig"
 maintainer       "Jesse Campbell"
 maintainer_email "hikeit@gmail.com"
 license          "Apache License"
