@@ -80,8 +80,8 @@ if node[:platform_version].to_i == 6
 
 	service "sssd" do
 		supports :status => true, :restart => true, :reload => true
-		# Avoid starting or restarting sssd if disabled
-		# Especially needed if kerberos enabled, ldap disabled
+		# Avoid starting or restarting sssd if disabled,
+		# especially when kerberos is enabled, and ldap not
 		restart_command "/sbin/chkconfig sssd | grep -v :on || /sbin/service sssd restart"
 		start_command "/sbin/chkconfig sssd | grep -v :on || /sbin/service sssd restart"
 	end
