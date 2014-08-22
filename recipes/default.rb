@@ -80,6 +80,10 @@ if node[:platform_version].to_i == 6
 
 	service "sssd" do
 		supports :status => true, :restart => true, :reload => true
+		# Avoid starting or restarting sssd if disabled
+		# Especially needed if kerberos enabled, ldap disabled
+		restart_command "/sbin/chkconfig sssd | grep -v :on || /sbin/service sssd restart"
+		start_command "/sbin/chkconfig sssd | grep -v :on || /sbin/service sssd restart"
 	end
 
 	execute "clean_sss_db" do
@@ -98,11 +102,7 @@ if node[:platform_version].to_i == 6
 		group "root"
 		notifies :run, "execute[clean_sss_db]", :immediately
 		notifies :run, "execute[restorecon /etc/sssd/sssd.conf]", :immediately
-		# Restart sssd only if LDAP actually enables it
-		if node['authconfig']['ldap']['enable']
-			notifies :restart, "service[sssd]", :immediately
-		end
-
+		notifies :restart, "service[sssd]", :immediately
 		notifies :reload, "ohai[reload]", :immediately
 	end
 
