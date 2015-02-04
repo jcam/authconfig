@@ -32,6 +32,7 @@ default['authconfig']['ldap']['sudo']['enable'] = false
 default['authconfig']['ldap']['sudo']['basedn'] = ''
 default['authconfig']['ldap']['sudo']['full_refresh'] = '86400'
 default['authconfig']['ldap']['sudo']['smart_refresh'] = '3600'
+default['authconfig']['ldap']['authtok'] = 'password'
 default['authconfig']['ldap']['bindpw'] = ''
 default['authconfig']['ldap']['starttls'] = false
 default['authconfig']['ldap']['ssl'] = false
