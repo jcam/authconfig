@@ -102,7 +102,10 @@ if node[:platform_version].to_i == 6
 		group "root"
 		notifies :run, "execute[clean_sss_db]", :immediately
 		notifies :run, "execute[restorecon /etc/sssd/sssd.conf]", :immediately
-		notifies :restart, "service[sssd]", :immediately
+		# sssd cannot restart if ldap disabled, kerberos enabled
+		unless ! node['authconfig']['ldap']['enable'] && node['authconfig']['keberos']['enable']
+			notifies :restart, "service[sssd]", :immediately
+		end
 		notifies :reload, "ohai[reload]", :immediately
 	end
 
