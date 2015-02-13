@@ -133,7 +133,7 @@ ldap_group_member = msSFU30PosixMember
 <% else -%>
 ldap_group_member = uniqueMember
 <% end -%>
-<% if !node[:authconfig][:access_provider].nil? -%>
+<% unless node[:authconfig][:access_provider].nil? -%>
 access_provider = <%= node[:authconfig][:access_provider][:type] %>
 <% if node[:authconfig][:access_provider][:allow_groups] != '' -%>
 simple_allow_groups = <%= node[:authconfig][:access_provider][:allow_groups] %>
