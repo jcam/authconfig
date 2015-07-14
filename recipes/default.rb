@@ -67,7 +67,7 @@ if node['authconfig']['kerberos']['enable']
 	end
 end
 
-if node[:platform_version].to_i == 6
+if node[:platform_version].to_i == 6 || node[:platform_version].to_i == 7
 	if node['authconfig']['ldap']['enable']
 		package 'pam_ldap' do
 			action :install
@@ -105,6 +105,23 @@ if node[:platform_version].to_i == 6
 		notifies :restart, "service[sssd]", :immediately
 		notifies :reload, "ohai[reload]", :immediately
 	end
+
+elsif node['platform'] == 'amazon'
+  if node['authconfig']['ldap']['enable']
+    ['openssh-ldap','openldap-clients','nss-pam-ldapd'].each do |pkg|
+      package pkg do
+        action :install
+      end
+    end
+  end
+
+  template "/etc/ldap.conf" do
+    source "ldap.conf.erb"
+    mode 0644
+    owner "root"
+    group "root"
+    notifies :reload, "ohai[reload]", :immediately
+  end
 
 elsif node[:platform_version].to_i == 5
 	#ldap users don't work immediately, sleeping 60 seems to fix. TODO Fix this hack
