@@ -19,6 +19,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+package 'authconfig' do
+  action :install
+end
 
 # Run the authconfig script, only on arguments file change
 execute "authconfig-update" do
