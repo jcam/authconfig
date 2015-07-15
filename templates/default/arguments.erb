@@ -28,14 +28,14 @@
 <% end -%>
 --ldapserver=<%= node[:authconfig][:ldap][:server] %>
 --ldapbasedn=<%= node[:authconfig][:ldap][:dnbase] %>
-<% if node[:authconfig][:ldap][:starttls] && node[:platform_version].to_i == 6 -%>
+<% if node[:authconfig][:ldap][:starttls] && node[:platform_version].to_i >= 6 -%>
 	--enableldapstarttls
 <% elsif node[:authconfig][:ldap][:ssl] && node[:platform_version].to_i == 5 -%>
 	--enableldapssl
 <% elsif node[:authconfig][:ldap][:tls] -%>
 	--enableldaptls
 <% else -%>
-	<% if node[:platform_version].to_i == 6 -%>
+    <% if node[:platform_version].to_i >= 6 -%>
 		--disableldapstarttls
 	<% else -%>
 		--disableldapssl
