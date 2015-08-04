@@ -33,7 +33,7 @@ when 'redhat', 'centos', 'scientific'
   case node[:platform_version].to_i
   when 7
     sssd_action = 'install'
-    node.default['authconfig']['ldap']['packages'] = ['pam_ldap']
+    node.default['authconfig']['ldap']['packages'] = ['sssd-ldap','pam_ldap']
   when 6
     node.default['authconfig']['ldap']['packages'] = ['nss-pam-ldapd','pam_ldap']
     case node['authconfig']['sssd']['enable']
