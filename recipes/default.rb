@@ -20,12 +20,7 @@
 # limitations under the License.
 #
 
-# All platforms need the authconfig package
-package 'authconfig' do
-  action :install
-end
-
-# Evaluate this last so that wrapper cookbooks work
+# Determine sssd_action in recipe so that wrapper cookbooks can override attribute
 sssd_action = nil
 nslcd_enable = false
 case node['platform']
@@ -33,6 +28,8 @@ when 'redhat', 'centos', 'scientific'
   case node[:platform_version].to_i
   when 7
     sssd_action = 'install'
+    # CentOS 7 requires authconfig update to avoid bugs with multiple LDAP servers
+    authconfig_action = 'upgrade'
     node.default['authconfig']['ldap']['packages'] = ['sssd-ldap','pam_ldap']
   when 6
     node.default['authconfig']['ldap']['packages'] = ['nss-pam-ldapd','pam_ldap']
@@ -43,17 +40,25 @@ when 'redhat', 'centos', 'scientific'
       sssd_action = 'remove'
       nslcd_enable = true
     end
+    authconfig_action = 'install'
   else
     node.default['authconfig']['ldap']['packages'] = ['nss_ldap']
     nslcd_enable = true
+    authconfig_action = 'install'
   end
 
 when 'amazon'
   node.default['authconfig']['ldap']['packages'] = ['nss-pam-ldapd','pam_ldap']
+  authconfig_action = 'install'
 
 else
   Chef::Log.info( "AuthConfig: Only Redhat-based systems are supported at this time." )
   return
+end
+
+# All platforms need the authconfig package
+package 'authconfig' do
+  action authconfig_action
 end
 
 # Install or Remove SSSD as appropriate
