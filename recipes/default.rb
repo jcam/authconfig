@@ -30,7 +30,7 @@ when 'redhat', 'centos', 'scientific'
     sssd_action = 'install'
     # CentOS 7 requires authconfig update to avoid bugs with multiple LDAP servers
     authconfig_action = 'upgrade'
-    node.default['authconfig']['ldap']['packages'] = ['sssd-ldap','pam_ldap']
+    node.default['authconfig']['ldap']['_packages'] = ['nss-pam-ldapd']
   when 6
     node.default['authconfig']['ldap']['packages'] = ['nss-pam-ldapd','pam_ldap']
     case node['authconfig']['sssd']['enable']
@@ -69,15 +69,26 @@ end
 
 # Add or remove the LDAP packages as appropriate
 #  so that authconfig can modify their configuration files
-if node['authconfig']['sssd']['enable'] || !node['authconfig']['ldap']['enable']
-  ldappkg_action = 'remove'
+if node['authconfig']['ldap']['enable']
+  if node['authconfig']['sssd']['enable']
+    ldappkg_action = 'remove'
+    sssdldap_action = 'install'
+  else
+    ldappkg_action = 'install'
+    sssdldap_action = 'remove'
+  end
 else
-  ldappkg_action = 'install'
+    ldappkg_action = 'remove'
+    sssdldap_action = 'remove'
 end
 node['authconfig']['ldap']['packages'].each do |pkgname|
   package pkgname do
     action ldappkg_action
   end
+end
+package 'sssd-ldap' do
+  action sssdldap_action
+  not_if { sssd_action.nil? }
 end
 
 # Run the authconfig script, only on arguments file change
