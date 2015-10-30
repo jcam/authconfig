@@ -45,6 +45,7 @@ default['authconfig']['ldap']['reqcert']= true
 default['authconfig']['ldap']['disable_tls']= false
 default['authconfig']['ldap']['user_search'] = ''
 default['authconfig']['ldap']['group_search'] = ''
+default['authconfig']['ldap']['group_member'] = 'uniqueMember'
 default['authconfig']['smartcard']['enable'] = false
 default['authconfig']['smartcard']['require'] = false
 default['authconfig']['smartcard']['module'] = ''

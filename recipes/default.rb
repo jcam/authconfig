@@ -68,7 +68,7 @@ package 'sssd-client' do
 end
 
 # Add or remove the LDAP packages as appropriate
-# so that authconfig can modify their configuration files
+#  so that authconfig can modify their configuration files
 if node['authconfig']['sssd']['enable'] || !node['authconfig']['ldap']['enable']
   ldappkg_action = 'remove'
 else
