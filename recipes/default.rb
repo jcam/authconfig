@@ -30,7 +30,7 @@ when 'redhat', 'centos', 'scientific'
     sssd_action = 'install'
     # CentOS 7 requires authconfig update to avoid bugs with multiple LDAP servers
     authconfig_action = 'upgrade'
-    node.default['authconfig']['ldap']['_packages'] = ['nss-pam-ldapd']
+    node.default['authconfig']['ldap']['packages'] = ['nss-pam-ldapd']
   when 6
     node.default['authconfig']['ldap']['packages'] = ['nss-pam-ldapd','pam_ldap']
     case node['authconfig']['sssd']['enable']
@@ -75,7 +75,7 @@ if node['authconfig']['ldap']['enable']
     sssdldap_action = 'install'
   else
     ldappkg_action = 'install'
-    sssdldap_action = 'remove'
+    sssdldap_action = 'install'
   end
 else
     ldappkg_action = 'remove'
