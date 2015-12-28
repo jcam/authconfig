@@ -72,10 +72,15 @@ if node[:platform_version].to_i == 6
 		package 'pam_ldap' do
 			action :install
 		end
+		package 'nss-pam-ldapd' do
+			action :install
+				notifies :run, "execute[authconfig-update]", :immediately
+		end
 	end
 
 	package "sssd" do
 		action :install
+		only_if { node['authconfig']['sssd']['enable'] }
 	end
 
 	service "sssd" do
@@ -84,6 +89,7 @@ if node[:platform_version].to_i == 6
 		# especially when kerberos is enabled, and ldap not
 		restart_command "/sbin/chkconfig sssd --list | grep -v :on || /sbin/service sssd restart"
 		start_command "/sbin/chkconfig sssd --list | grep -v :on || /sbin/service sssd start"
+		only_if { node['authconfig']['sssd']['enable'] }
 	end
 
 	execute "clean_sss_db" do
@@ -104,6 +110,7 @@ if node[:platform_version].to_i == 6
 		notifies :run, "execute[restorecon /etc/sssd/sssd.conf]", :immediately
 		notifies :restart, "service[sssd]", :immediately
 		notifies :reload, "ohai[reload]", :immediately
+		only_if { node['authconfig']['sssd']['enable'] }
 	end
 
 elsif node[:platform_version].to_i == 5
