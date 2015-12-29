@@ -67,14 +67,14 @@ if node['authconfig']['kerberos']['enable']
 	end
 end
 
-if node[:platform_version].to_i == 6
+if node[:platform_version].to_i == 6 || node[:platform_version].to_i == 7
 	if node['authconfig']['ldap']['enable']
 		package 'pam_ldap' do
 			action :install
 		end
 		package 'nss-pam-ldapd' do
 			action :install
-				notifies :run, "execute[authconfig-update]", :immediately
+			notifies :run, "execute[authconfig-update]", :immediately
 		end
 	end
 
