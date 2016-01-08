@@ -41,6 +41,16 @@ when 'redhat', 'centos', 'scientific'
       nslcd_enable = true
     end
     authconfig_action = 'install'
+  when 5
+    node.default['authconfig']['ldap']['packages'] = ['openldap24-libs','sssd']
+    case node['authconfig']['sssd']['enable']
+    when true
+      sssd_action = 'install'
+    when false
+      sssd_action = 'remove'
+      nslcd_enable = true
+    end
+    authconfig_action = 'install'
   else
     node.default['authconfig']['ldap']['packages'] = ['nss_ldap']
     nslcd_enable = true
