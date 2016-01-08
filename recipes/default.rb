@@ -42,15 +42,23 @@ when 'redhat', 'centos', 'scientific'
     end
     authconfig_action = 'install'
   when 5
-    node.default['authconfig']['ldap']['packages'] = ['openldap24-libs','sssd']
+    node.default['authconfig']['ldap']['packages'] = []
     case node['authconfig']['sssd']['enable']
     when true
       sssd_action = 'install'
     when false
       sssd_action = 'remove'
-      nslcd_enable = true
+      nslcd_enable = false
     end
-    authconfig_action = 'install'
+    #must be current
+    authconfig_action = 'upgrade'
+
+    #Install ssd if we need it
+    package 'sssd' do
+      action sssd_action
+      not_if { sssd_action.nil? }
+    end
+
   else
     node.default['authconfig']['ldap']['packages'] = ['nss_ldap']
     nslcd_enable = true
@@ -96,9 +104,13 @@ node['authconfig']['ldap']['packages'].each do |pkgname|
     action ldappkg_action
   end
 end
-package 'sssd-ldap' do
-  action sssdldap_action
-  not_if { sssd_action.nil? }
+
+#sssd-ldap does not exists for centos 5
+if node['platform_version'].to_f >= 6
+  package 'sssd-ldap' do
+    action sssdldap_action
+    not_if { sssd_action.nil? }
+  end
 end
 
 # Run the authconfig script, only on arguments file change
@@ -146,19 +158,32 @@ if sssd_action == 'install'
 		action :nothing
 	end
 
-	execute "restorecon /etc/sssd/sssd.conf" do
-		action :nothing
-	end
+  # This does not exists in centos 5
+  if node['platform_version'].to_f >= 6
+  	execute "restorecon /etc/sssd/sssd.conf" do
+  		action :nothing
+  	end
 
-	template "/etc/sssd/sssd.conf" do
-		source "sssd.conf.erb"
-		mode 0600
-		owner "root"
-		group "root"
-		notifies :run, "execute[clean_sss_db]", :immediately
-		notifies :run, "execute[restorecon /etc/sssd/sssd.conf]", :immediately
-		notifies :restart, "service[sssd]", :immediately
-		notifies :reload, 'ohai[reload_passwd]', :immediately
+  	template "/etc/sssd/sssd.conf" do
+  		source "sssd.conf.erb"
+  		mode 0600
+  		owner "root"
+  		group "root"
+  		notifies :run, "execute[clean_sss_db]", :immediately
+  		notifies :run, "execute[restorecon /etc/sssd/sssd.conf]", :immediately
+  		notifies :restart, "service[sssd]", :immediately
+  		notifies :reload, 'ohai[reload_passwd]', :immediately
+  	end
+  else
+  	template "/etc/sssd/sssd.conf" do
+  		source "sssd.conf.erb"
+  		mode 0600
+  		owner "root"
+  		group "root"
+  		notifies :run, "execute[clean_sss_db]", :immediately
+  		notifies :restart, "service[sssd]", :immediately
+  		notifies :reload, 'ohai[reload_passwd]', :immediately
+  	end
 	end
 
 	service "sssd" do
