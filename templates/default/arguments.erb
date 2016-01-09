@@ -161,11 +161,11 @@
   	<% else -%>
   		--disableforcelegacy
   	<% end -%>
-	<% end -%>
-	<% if node[:authconfig][:sssd][:cachecreds] -%>
-		--enablecachecreds
-	<% else -%>
-		--disablecachecreds
+  	<% if node[:authconfig][:sssd][:cachecreds] -%>
+  		--enablecachecreds
+  	<% else -%>
+  		--disablecachecreds
+  	<% end -%>
 	<% end -%>
 <% end -%>
 <% if node[:authconfig][:cachecreds] -%>
