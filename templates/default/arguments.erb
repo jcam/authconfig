@@ -155,10 +155,12 @@
 	<% else -%>
 		--disablesssdauth
 	<% end -%>
-	<% if node[:authconfig][:sssd][:forcelegacy] -%>
-		--enableforcelegacy
-	<% else -%>
-		--disableforcelegacy
+	<% if node[:platform_version].to_i >= 6 -%>
+  	<% if node[:authconfig][:sssd][:forcelegacy] -%>
+  		--enableforcelegacy
+  	<% else -%>
+  		--disableforcelegacy
+  	<% end -%>
 	<% end -%>
 	<% if node[:authconfig][:sssd][:cachecreds] -%>
 		--enablecachecreds
