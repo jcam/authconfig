@@ -46,19 +46,18 @@ when 'redhat', 'centos', 'scientific'
     case node['authconfig']['sssd']['enable']
     when true
       sssd_action = 'install'
+      package 'sssd' do
+        action :upgrade
+      end
     when false
       sssd_action = 'remove'
       nslcd_enable = false
+      package 'sssd' do
+        action :remove
+      end
     end
     #must be current
     authconfig_action = 'upgrade'
-
-    #Install ssd if we need it
-    package 'sssd' do
-      action sssd_action
-      not_if { sssd_action.nil? }
-    end
-
   else
     node.default['authconfig']['ldap']['packages'] = ['nss_ldap']
     nslcd_enable = true
