@@ -91,3 +91,5 @@ default['authconfig']['sysnetauth'] = false
 default['authconfig']['mkhomedir'] = false
 default['authconfig']['autofs']['enable'] = false
 default['authconfig']['autofs']['sssdservice'] = false
+default['authconfig']['ldapauth']['enable'] = true
+default['authconfig']['sssdauth']['enable'] = false
