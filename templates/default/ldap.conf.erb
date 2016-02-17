@@ -4,6 +4,9 @@ base <%= node[:authconfig][:ldap][:dnbase] %>
 <% if node[:authconfig][:ldap][:sudo][:base] != '' -%>
 sudoers_base <%= node[:authconfig][:ldap][:sudo][:base] %>
 <% end -%>
+<% if node[:authconfig][:ldap][:hosts][:base] != '' -%>
+nss_base_hosts <%= node[:authconfig][:ldap][:hosts][:base] %>
+<% end -%>
 <% if node[:authconfig][:ldap][:dnbind] != '' -%>
 binddn <%= node[:authconfig][:ldap][:dnbind] %>
 <% end -%>
