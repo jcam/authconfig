@@ -5,16 +5,16 @@ base <%= node[:authconfig][:ldap][:dnbase] %>
 sudoers_base <%= node[:authconfig][:ldap][:sudo][:base] %>
 <% end -%>
 <% if node[:authconfig][:ldap][:hosts][:base] != '' -%>
-nss_base_hosts <%= node[:authconfig][:ldap][:hosts][:base] %>
+nss_base_hosts    <%= node[:authconfig][:ldap][:hosts][:base] %>
 <% end -%>
 <% if node[:authconfig][:ldap][:user_search] != '' -%>
-nss_base_passwd <%= node[:authconfig][:ldap][:user_search] %>
+nss_base_passwd   <%= node[:authconfig][:ldap][:user_search] %>
 <% end -%>
 <% if node[:authconfig][:ldap][:user_search] != '' -%>
-nss_base_shadow <%= node[:authconfig][:ldap][:user_search] %>
+nss_base_shadow   <%= node[:authconfig][:ldap][:user_search] %>
 <% end -%>
 <% if node[:authconfig][:ldap][:group_search] != '' -%>
-nss_base_group <%= node[:authconfig][:ldap][:group_search] %>
+nss_base_group    <%= node[:authconfig][:ldap][:group_search] %>
 <% end -%>
 <% if node[:authconfig][:ldap][:dnbind] != '' -%>
 binddn <%= node[:authconfig][:ldap][:dnbind] %>
