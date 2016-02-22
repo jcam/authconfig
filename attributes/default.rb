@@ -28,6 +28,7 @@ default['authconfig']['ldap']['auth'] = false
 default['authconfig']['ldap']['server'] = ''
 default['authconfig']['ldap']['dnbind'] = ''
 default['authconfig']['ldap']['dnbase'] = ''
+default['authconfig']['ldap']['hosts']['base'] = ''
 default['authconfig']['ldap']['sudo']['enable'] = false
 default['authconfig']['ldap']['sudo']['basedn'] = ''
 default['authconfig']['ldap']['sudo']['full_refresh'] = '86400'
