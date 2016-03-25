@@ -96,6 +96,7 @@ if node[:platform_version].to_i == 6
 	end
 
 	template "/etc/sssd/sssd.conf" do
+    sensitive true
 		source "sssd.conf.erb"
 		mode 0600
 		owner "root"
