@@ -124,7 +124,7 @@ ldap_default_authtok_type = <%= node[:authconfig][:ldap][:authtok_type] %>
 ldap_default_authtok = <%= node[:authconfig][:ldap][:bindpw] %>
 <% end -%>
 
-<% if node[:authconfig][:ipa][:enabled] -%>
+<% if node[:authconfig][:ipa][:enable] -%>
 ldap_user_ssh_public_key = <%= node[:authconfig][:ipa][:attribute] %>
 <% end -%>
 
