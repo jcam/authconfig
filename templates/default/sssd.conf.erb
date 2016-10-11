@@ -7,7 +7,7 @@ reconnection_retries = 3
 
 # If a back end is particularly slow you can raise this timeout here
 sbus_timeout = 30
-services = nss, pam<% if node[:authconfig][:ldap][:sudo][:enable] -%>, sudo<% end -%><% if node[:authconfig][:autofs][:sssdservice] -%>, autofs<% end -%>
+services = nss, pam<% if node[:authconfig][:ldap][:sudo][:enable] -%>, sudo<% end -%><% if node[:authconfig][:autofs][:sssdservice] -%>, autofs<% end -%><% if node[:authconfig][:sssd][:ssh] -%>, ssh<% end -%>
 
 # SSSD will not start if you do not configure any domains.
 # Add new domain configurations as [domain/<NAME>] sections, and
@@ -123,6 +123,11 @@ ldap_auth_disable_tls_never_use_in_production = true
 ldap_default_authtok_type = <%= node[:authconfig][:ldap][:authtok_type] %>
 ldap_default_authtok = <%= node[:authconfig][:ldap][:bindpw] %>
 <% end -%>
+
+<% if node[:authconfig][:ipa][:enabled] -%>
+ldap_user_ssh_public_key = <%= node[:authconfig][:ipa][:attribute] %>
+<% end -%>
+
 
 <% if node[:authconfig][:ldap][:server_is_ad] -%>
 min_id = 700
