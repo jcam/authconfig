@@ -25,7 +25,7 @@ sssd_action = nil
 nslcd_enable = false
 case node['platform']
 when 'redhat', 'centos', 'scientific'
-  case node[:platform_version].to_i
+  case node['platform_version'].to_i
   when 7
     sssd_action = 'install'
     # CentOS 7 requires authconfig update to avoid bugs with multiple LDAP servers
@@ -212,7 +212,7 @@ service 'nslcd' do
   only_if  { nslcd_enable }
 end
 
-if node[:platform_version].to_i == 5
+if node['platform_version'].to_i == 5
 	#ldap users don't work immediately, sleeping 60 seems to fix. TODO Fix this hack
 	execute "sleep 60" do
 		action :nothing
