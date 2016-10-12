@@ -15,18 +15,8 @@ services = nss, pam<% if node[:authconfig][:ldap][:sudo][:enable] -%>, sudo<% en
 # queried) to the "domains" attribute below and uncomment it.
 # domains = LOCAL,LDAP
 
-<% if node[:authconfig][:ldap][:dnbase] != '' -%>
-	<% dnbasearr = node[:authconfig][:ldap][:dnbase].split(';') -%>
-	<% numdomains = dnbasearr.count -%>
-	<% domainlist = "domain1" -%>
-	<% 2.upto(numdomains) do |count| -%>
-		<% domainlist += ",domain#{count}" -%>
-	<% end -%>
-domains = <%= domainlist %>
-<% else -%>
-	<% numdomains = 1 -%>
-domains = domain1
-<% end -%>
+
+domains = <%= node[:authconfig][:ldap][:dns][:domain] %>
 
 <% if node[:authconfig][:autofs][:enable] -%>
 [autofs]
@@ -54,10 +44,16 @@ reconnection_retries = 3
 [pam]
 reconnection_retries = 3
 
-<% 1.upto(numdomains) do |count| -%>
-[domain/domain<%= count %>]
+
+[domain/<%= node[:authconfig][:ldap][:dns][:domain] %>]
 enumerate = true
+
+<% if node[:authconfig][:ldap][:dns][:srv] -%>
+access_provider = ldap
+<% else -%>
 ldap_uri = <%= node[:authconfig][:ldap][:server] %>
+<% end -%>
+
 <% if node[:authconfig][:ldap][:dnbase] != '' -%>
 ldap_search_base = <%= dnbasearr[count-1] %>
 <% end -%>
@@ -146,4 +142,4 @@ ldap_group_member = msSFU30PosixMember
 ldap_group_member = <%= node[:authconfig][:ldap][:group_member] -%>
 <% end -%>
 <% end -%>
-<% end -%>
+
