@@ -48,9 +48,7 @@ reconnection_retries = 3
 [domain/<%= node['authconfig']['ldap']['dns']['domain'] %>]
 enumerate = true
 
-<% if node['authconfig']['ldap']['dns']['srv'] -%>
-access_provider = ldap
-<% else -%>
+<% if !node['authconfig']['ldap']['dns']['srv'] and node['authconfig']['ldap']['server'] != ''-%>
 ldap_uri = <%= node['authconfig']['ldap']['server'] %>
 <% end -%>
 
