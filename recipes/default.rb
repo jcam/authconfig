@@ -157,6 +157,13 @@ if sssd_action == 'install'
 		action :nothing
 	end
 
+  directory '/etc/sssd' do
+    mode '0600'
+    owner 'root'
+    group 'root'
+    action :create
+  end
+
   # This does not exists in centos 5
   if node['platform_version'].to_f >= 6
   	execute "restorecon /etc/sssd/sssd.conf" do
