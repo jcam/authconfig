@@ -125,6 +125,10 @@ if node['platform_version'].to_f >= 6
     action sssdldap_action
     not_if { sssd_action.nil? }
   end
+  package 'sssd-ipa' do
+    action sssdldap_action
+    not_if { sssd_action.nil? }
+  end
 end
 
 # Run the authconfig script, only on arguments file change
