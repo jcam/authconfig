@@ -24,8 +24,23 @@
 sssd_action = nil
 nslcd_enable = false
 case node['platform']
-when 'redhat', 'centos', 'scientific'
+when 'redhat', 'centos', 'scientific', 'amazon'
   case node['platform_version'].to_i
+  when 2016
+    sssd_action = 'install'
+    # amazon linux requires authconfig update to avoid bugs with multiple LDAP servers
+    authconfig_action = 'upgrade'
+    node.default['authconfig']['ldap']['packages'] = ['nss-pam-ldapd']
+  when 2015
+    sssd_action = 'install'
+    # amazon linux requires authconfig update to avoid bugs with multiple LDAP servers
+    authconfig_action = 'upgrade'
+    node.default['authconfig']['ldap']['packages'] = ['nss-pam-ldapd']
+  when 2014
+    sssd_action = 'install'
+    # amazon linux requires authconfig update to avoid bugs with multiple LDAP servers
+    authconfig_action = 'upgrade'
+    node.default['authconfig']['ldap']['packages'] = ['nss-pam-ldapd']  
   when 7
     sssd_action = 'install'
     # CentOS 7 requires authconfig update to avoid bugs with multiple LDAP servers
