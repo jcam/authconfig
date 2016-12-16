@@ -46,15 +46,9 @@ when 'redhat', 'centos', 'scientific'
     case node['authconfig']['sssd']['enable']
     when true
       sssd_action = 'install'
-      package 'sssd' do
-        action :upgrade
-      end
     when false
       sssd_action = 'remove'
       nslcd_enable = false
-      package 'sssd' do
-        action :remove
-      end
     end
     #must be current
     authconfig_action = 'upgrade'
@@ -79,7 +73,7 @@ package 'authconfig' do
 end
 
 # Install or Remove SSSD as appropriate
-package 'sssd-client' do
+package 'sssd' do
   action sssd_action
   not_if { sssd_action.nil? }
 end
@@ -152,64 +146,54 @@ end
 
 # SSSD configuration if installed
 if sssd_action == 'install'
+
+  execute 'restorecon /etc/sssd/sssd.conf' do
+    action :nothing
+  end
+
 	execute "clean_sss_db" do
 		command "rm -f /var/lib/sss/db/*"
 		action :nothing
 	end
 
   directory '/etc/sssd' do
-    mode '0600'
+    mode 0600
     owner 'root'
     group 'root'
     action :create
   end
 
-  # This does not exists in centos 5
-  if node['platform_version'].to_f >= 6
-  	execute "restorecon /etc/sssd/sssd.conf" do
-  		action :nothing
-  	end
+ 	template '/etc/sssd/sssd.conf' do
+ 		source 'sssd.conf.erb'
+		mode 0600
+ 		owner 'root'
+ 		group 'root'
+ 		notifies :run, 'execute[clean_sss_db]', :immediately
+ 		notifies :run, 'execute[restorecon /etc/sssd/sssd.conf]', :immediately if node['platform_version'].to_f >= 6
+ 		notifies :restart, 'service[sssd]', :delayed
+ 		notifies :reload, 'ohai[reload_passwd]', :immediately
+ 	end
+end
 
-  	template "/etc/sssd/sssd.conf" do
-  		source "sssd.conf.erb"
-  		mode 0600
-  		owner "root"
-  		group "root"
-  		notifies :run, "execute[clean_sss_db]", :immediately
-  		notifies :run, "execute[restorecon /etc/sssd/sssd.conf]", :immediately
-  		notifies :restart, "service[sssd]", :immediately
-  		notifies :reload, 'ohai[reload_passwd]', :immediately
-  	end
-  else
-  	template "/etc/sssd/sssd.conf" do
-  		source "sssd.conf.erb"
-  		mode 0600
-  		owner "root"
-  		group "root"
-  		notifies :run, "execute[clean_sss_db]", :immediately
-  		notifies :restart, "service[sssd]", :immediately
-  		notifies :reload, 'ohai[reload_passwd]', :immediately
-  	end
-	end
-
-	service "sssd" do
-		supports :status => true, :restart => true, :reload => true
-		# Avoid starting or restarting sssd if disabled,
-		# especially when kerberos is enabled, and ldap not
-		restart_command "/sbin/chkconfig sssd --list | grep -v :on || /sbin/service sssd restart"
-		start_command "/sbin/chkconfig sssd --list | grep -v :on || /sbin/service sssd start"
-	end
+service "sssd" do
+  supports :status => true, :restart => true, :reload => true
+  # Avoid starting or restarting sssd if disabled,
+  # especially when kerberos is enabled, and ldap not
+  restart_command "/sbin/chkconfig sssd --list | grep -v :on || /sbin/service sssd restart"
+  start_command "/sbin/chkconfig sssd --list | grep -v :on || /sbin/service sssd start"
+  action :nothing
 end
 
 # Do this last so it modifies all other config files correctly
-template "/etc/authconfig/arguments" do
-  source "arguments.erb"
+template '/etc/authconfig/arguments' do
+  source 'arguments.erb'
   mode 0440
-  owner "root"
-  group "root"
-  notifies :install, "package[autofs]" if node['authconfig']['autofs']['enable']
-  notifies :run, "execute[authconfig-update]", :immediately
-  notifies :reload, "service[autofs]", :immediately if node['authconfig']['autofs']['enable']
+  owner 'root'
+  group 'root'
+  notifies :install, 'package[autofs]' if node['authconfig']['autofs']['enable']
+  notifies :run, 'execute[authconfig-update]', :immediately
+  notifies :reload, 'service[sssd]', :immediately if sssd_action == 'install'
+  notifies :reload, 'service[autofs]', :immediately if node['authconfig']['autofs']['enable']
   notifies :reload, 'ohai[reload_passwd]', :immediately if sssd_action != 'install'
 end
 
@@ -221,16 +205,16 @@ end
 
 if node['platform_version'].to_i == 5
 	#ldap users don't work immediately, sleeping 60 seems to fix. TODO Fix this hack
-	execute "sleep 60" do
+	execute 'sleep 60' do
 		action :nothing
 	end
 
-	template "/etc/ldap.conf" do
-		source "ldap.conf.erb"
+	template '/etc/ldap.conf' do
+		source 'ldap.conf.erb'
 		mode 0644
 		owner "root"
 		group "root"
-		notifies :run, "execute[sleep 60]", :immediately
+		notifies :run, 'execute[sleep 60]', :immediately
 		notifies :reload, 'ohai[reload_passwd]', :immediately
 	end
 end
