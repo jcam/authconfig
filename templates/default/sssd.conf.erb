@@ -88,6 +88,8 @@ chpass_provider = ldap
 <% elsif node['authconfig']['kerberos']['auth'] -%>
 auth_provider = krb5
 chpass_provider = krb5
+krb5_kpasswd = <%= node['authconfig']['kerberos']['kdcserver'] %>
+krb5_backup_kpasswd = <%= node['authconfig']['kerberos']['kdcbackupserver'] %>
 <% if node['authconfig']['ad']['auth'] -%>
 access_provider = ad
 <% end -%>
@@ -102,6 +104,7 @@ chpass_provider = ad
 <% if node['authconfig']['kerberos']['enable'] -%>
 krb5_realm = <%= node['authconfig']['kerberos']['realm'] %>
 krb5_server = <%= node['authconfig']['kerberos']['kdcserver'] %>
+krb5_backup_server = <%= node['authconfig']['kerberos']['kdcbackupserver'] %>
 <% if node['authconfig']['kerberos']['use_enterprise_principal'] -%>
 krb5_use_enterprise_principal = true
 <% end -%>

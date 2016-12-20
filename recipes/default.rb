@@ -98,14 +98,6 @@ node['authconfig']['ldap']['packages'].each do |pkgname|
   end
 end
 
-#sssd-ldap does not exists for centos 5
-if node['platform_version'].to_f >= 6
-  package 'sssd-ldap' do
-    action sssdldap_action
-    not_if { sssd_action.nil? }
-  end
-end
-
 # Run the authconfig script, only on arguments file change
 execute "authconfig-update" do
 	command "/bin/cat /etc/authconfig/arguments | /usr/bin/xargs /usr/sbin/authconfig --updateall"
