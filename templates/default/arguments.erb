@@ -112,7 +112,6 @@
 --smbidmapgid=<%= node['authconfig']['winbind']['smb']['idmapgid'] %>
 --winbindseparator=<%= node['authconfig']['winbind']['separator'] %>
 --winbindtemplatehomedir=<%= node['authconfig']['winbind']['template']['homedir'] %>
---winbindtemplateprimarygroup=<%= node['authconfig']['winbind']['template']['primarygroup'] %>
 --winbindtemplateshell=<%= node['authconfig']['winbind']['template']['shell'] %>
 <% if node['authconfig']['winbind']['usedefaultdomain'] -%>
 	--enablewinbindusedefaultdomain

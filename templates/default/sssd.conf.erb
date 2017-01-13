@@ -6,7 +6,7 @@ config_file_version = 2
 reconnection_retries = 3
 
 # If a back end is particularly slow you can raise this timeout here
-sbus_timeout = 30
+sbus_timeout = 5
 services = nss, pam<% if node['authconfig']['ldap']['sudo']['enable'] -%>, sudo<% end -%><% if node['authconfig']['autofs']['sssdservice'] -%>, autofs<% end -%><% if node['authconfig']['sssd']['ssh'] -%>, ssh<% end -%>
 
 # SSSD will not start if you do not configure any domains.
