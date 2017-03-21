@@ -18,3 +18,5 @@ bin/*
 
 # IDE
 .idea
+.buildpath
+.project

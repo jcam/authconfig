@@ -137,6 +137,9 @@ ldap_force_upper_case_realm = True
 ldap_group_member = msSFU30PosixMember
 
 <% else -%>
-ldap_group_member = uniqueMember
+
+ldap_group_member = <%= node[:authconfig][:ldap][:group_member] %>
+ldap_group_search_base = <%= node[:authconfig][:ldap][:group_search_base] %>
+
 <% end -%>
 <% end -%>
