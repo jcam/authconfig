@@ -67,7 +67,7 @@ if node['authconfig']['kerberos']['enable']
 	end
 end
 
-if node[:platform_version].to_i == 6
+if [6 , 7].include? node[:platform_version].to_i 
 	if node['authconfig']['ldap']['enable']
 		package 'pam_ldap' do
 			action :install
