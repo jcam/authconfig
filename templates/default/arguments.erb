@@ -1,85 +1,85 @@
-<% if node[:authconfig][:shadow][:enable] -%>
+<% if node['authconfig']['shadow']['enable'] -%>
 	--enableshadow
 <% else -%>
 	--disableshadow
 <% end -%>
-<% if node[:authconfig][:md5][:enable] -%>
+<% if node['authconfig']['md5']['enable'] -%>
 	--enablemd5
 <% else -%>
 	--disablemd5
 <% end -%>
---passalgo=<%= node[:authconfig][:passalgo] %>
-<% if node[:authconfig][:nis][:enable] -%>
+--passalgo=<%= node['authconfig']['passalgo'] %>
+<% if node['authconfig']['nis']['enable'] -%>
 	--enablenis
-	--nisdomain=<%= node[:authconfig][:nis][:domain] %>
-	--nisserver=<%= node[:authconfig][:nis][:server] %>
+	--nisdomain=<%= node['authconfig']['nis']['domain'] %>
+	--nisserver=<%= node['authconfig']['nis']['server'] %>
 <% else -%>
 	--disablenis
 <% end -%>
-<% if node[:authconfig][:ldap][:enable] -%>
+<% if node['authconfig']['ldap']['enable'] -%>
 	--enableldap
 <% else -%>
 	--disableldap
 <% end -%>
-<% if node[:authconfig][:ldap][:auth] -%>
+<% if node['authconfig']['ldap']['auth'] -%>
 	--enableldapauth
 <% else -%>
 	--disableldapauth
 <% end -%>
---ldapserver=<%= node[:authconfig][:ldap][:server] %>
---ldapbasedn=<%= node[:authconfig][:ldap][:dnbase] %>
-<% if node[:authconfig][:ldap][:starttls] && node[:platform_version].to_i == 6 -%>
+--ldapserver=<%= node['authconfig']['ldap']['server'] %>
+--ldapbasedn=<%= node['authconfig']['ldap']['dnbase'] %>
+<% if node['authconfig']['ldap']['starttls'] && node['platform_version'].to_i >= 6 -%>
 	--enableldapstarttls
-<% elsif node[:authconfig][:ldap][:ssl] && node[:platform_version].to_i == 5 -%>
+<% elsif node['authconfig']['ldap']['ssl'] && node['platform_version'].to_i == 5 -%>
 	--enableldapssl
-<% elsif node[:authconfig][:ldap][:tls] -%>
+<% elsif node['authconfig']['ldap']['tls'] -%>
 	--enableldaptls
 <% else -%>
-	<% if node[:platform_version].to_i == 6 -%>
+    <% if node['platform_version'].to_i >= 6 -%>
 		--disableldapstarttls
 	<% else -%>
 		--disableldapssl
 	<% end -%>
 	--disableldaptls
 <% end -%>
-<% if node[:platform_version].to_i == 6 -%>
-	<% if node[:authconfig][:ldap][:rfc2307bis] -%>
+<% if node['platform_version'].to_i == 6 -%>
+	<% if node['authconfig']['ldap']['rfc2307bis'] -%>
 		--enablerfc2307bis
 	<% else -%>
 		--disablerfc2307bis
 	<% end -%>
 <% end -%>
---ldaploadcacert=<%= node[:authconfig][:ldap][:cacerturl] %>
-<% if node[:authconfig][:smartcard][:enable] -%>
+--ldaploadcacert=<%= node['authconfig']['ldap']['cacerturl'] %>
+<% if node['authconfig']['smartcard']['enable'] -%>
 	--enablesmartcard
-	<% if node[:authconfig][:smartcard][:require] -%>
+	<% if node['authconfig']['smartcard']['require'] -%>
 		--enablerequiresmartcard
 	<% else -%>
 		--disablerequiresmartcard
 	<% end -%>
-	--smartcardmodule=<%= node[:authconfig][:smartcard][:module] %>
-	--smartcardaction=<%= node[:authconfig][:smartcard][:removalaction] %>
+	--smartcardmodule=<%= node['authconfig']['smartcard']['module'] %>
+	--smartcardaction=<%= node['authconfig']['smartcard']['removalaction'] %>
 <% else -%>
 	--disablesmartcard
 <% end -%>
-<% if node[:platform_version].to_i == 6 -%>
-	<% if node[:authconfig][:fingerprint][:enable] -%>
+<% if node['platform_version'].to_i == 6 -%>
+	<% if node['authconfig']['fingerprint']['enable'] -%>
 		--enablefingerprint
 	<% else -%>
 		--disablefingerprint
 	<% end -%>
 <% end -%>
-<% if node[:authconfig][:kerberos][:enable] -%>
+<% if node['authconfig']['kerberos']['enable'] -%>
 	--enablekrb5
-	--krb5kdc=<%= node[:authconfig][:kerberos][:kdcserver] %>
-	--krb5adminserver=<%= node[:authconfig][:kerberos][:adminserver] %>
-	--krb5realm=<%= node[:authconfig][:kerberos][:realm] %>
-	<% if node[:authconfig][:kerberos][:kdcdns] -%>
+	--krb5kdc=<%= node['authconfig']['kerberos']['kdcserver'] %>
+	--krb5adminserver=<%= node['authconfig']['kerberos']['adminserver'] %>
+	--krb5realm=<%= node['authconfig']['kerberos']['realm'] %>
+	<% if node['authconfig']['kerberos']['kdcdns'] -%>
 		--enablekrb5kdcdns
 	<% else -%>
 		--disablekrb5kdcdns
 	<% end -%>
-	<% if node[:authconfig][:kerberos][:realmdns] -%>
+	<% if node['authconfig']['kerberos']['realmdns'] -%>
 		--enablekrb5realmdns
 	<% else -%>
 		--disablekrb5realmdns
@@ -87,106 +87,110 @@
 <% else -%>
 	--disablekrb5
 <% end -%>
-<% if node[:authconfig][:winbind][:enable] -%>
+<% if node['authconfig']['winbind']['enable'] -%>
 	--enablewinbind
 <% else -%>
 	--disablewinbind
 <% end -%>
-<% if node[:authconfig][:winbind][:auth] -%>
+<% if node['authconfig']['winbind']['auth'] -%>
 	--enablewinbindauth
 <% else -%>
 	--disablewinbindauth
 <% end -%>
-<% if node[:platform_version].to_i == 5 -%>
-	<% if node[:authconfig][:winbind][:smb][:auth] -%>
+<% if node['platform_version'].to_i == 5 -%>
+	<% if node['authconfig']['winbind']['smb']['auth'] -%>
 		--enablesmbauth
 	<% else -%>
 		--disablesmbauth
 	<% end -%>
 <% end -%>
---smbsecurity=<%= node[:authconfig][:winbind][:smb][:security] %>
---smbrealm=<%= node[:authconfig][:winbind][:smb][:realm] %>
---smbservers=<%= node[:authconfig][:winbind][:smb][:servers] %>
---smbworkgroup=<%= node[:authconfig][:winbind][:smb][:workgroup] %>
---smbidmapuid=<%= node[:authconfig][:winbind][:smb][:idmapuid] %>
---smbidmapgid=<%= node[:authconfig][:winbind][:smb][:idmapgid] %>
---winbindseparator=<%= node[:authconfig][:winbind][:separator] %>
---winbindtemplatehomedir=<%= node[:authconfig][:winbind][:template][:homedir] %>
---winbindtemplateprimarygroup=<%= node[:authconfig][:winbind][:template][:primarygroup] %>
---winbindtemplateshell=<%= node[:authconfig][:winbind][:template][:shell] %>
-<% if node[:authconfig][:winbind][:usedefaultdomain] -%>
+--smbsecurity=<%= node['authconfig']['winbind']['smb']['security'] %>
+--smbrealm=<%= node['authconfig']['winbind']['smb']['realm'] %>
+--smbservers=<%= node['authconfig']['winbind']['smb']['servers'] %>
+--smbworkgroup=<%= node['authconfig']['winbind']['smb']['workgroup'] %>
+--smbidmapuid=<%= node['authconfig']['winbind']['smb']['idmapuid'] %>
+--smbidmapgid=<%= node['authconfig']['winbind']['smb']['idmapgid'] %>
+--winbindseparator=<%= node['authconfig']['winbind']['separator'] %>
+--winbindtemplatehomedir=<%= node['authconfig']['winbind']['template']['homedir'] %>
+<% if node['platform_version'].to_i < 7 -%>
+	--winbindtemplateprimarygroup=<%= node['authconfig']['winbind']['template']['primarygroup'] %>
+<% end -%>
+--winbindtemplateshell=<%= node['authconfig']['winbind']['template']['shell'] %>
+<% if node['authconfig']['winbind']['usedefaultdomain'] -%>
 	--enablewinbindusedefaultdomain
 <% else -%>
 	--disablewinbindusedefaultdomain
 <% end -%>
-<% if node[:authconfig][:winbind][:offline] -%>
+<% if node['authconfig']['winbind']['offline'] -%>
 	--enablewinbindoffline
 <% else -%>
 	--disablewinbindoffline
 <% end -%>
-<% if node[:authconfig][:winbind][:join] && false -%>
-	--winbindjoin=<%= node[:authconfig][:winbind][:join] %>
+<% if node['authconfig']['winbind']['join'] && false -%>
+	--winbindjoin=<%= node['authconfig']['winbind']['join'] %>
 <% end -%>
-<% if node[:authconfig][:wins][:enable] -%>
+<% if node['authconfig']['wins']['enable'] -%>
 	--enablewins
 <% else -%>
 	--disablewins
 <% end -%>
-<% if node[:authconfig][:preferdns][:enable] -%>
+<% if node['authconfig']['preferdns']['enable'] -%>
 	--enablepreferdns
 <% else -%>
 	--disablepreferdns
 <% end -%>
-<% if node[:authconfig][:hesiod][:enable] -%>
+<% if node['authconfig']['hesiod']['enable'] -%>
 	--enablehesiod
-	--hesiodlhs=<%= node[:authconfig][:hesiod][:lhs] %>
-	--hesiodrhs=<%= node[:authconfig][:hesiod][:rhs] %>
+	--hesiodlhs=<%= node['authconfig']['hesiod']['lhs'] %>
+	--hesiodrhs=<%= node['authconfig']['hesiod']['rhs'] %>
 <% else -%>
 	--disablehesiod
 <% end -%>
-<% if node[:platform_version].to_i == 6 -%>
-	<% if node[:authconfig][:sssd][:enable] -%>
+<% if node['platform_version'].to_i >= 5 -%>
+	<% if node['authconfig']['sssd']['enable'] -%>
 		--enablesssd
 	<% else -%>
 		--disablesssd
 	<% end -%>
-	<% if node[:authconfig][:sssd][:auth] -%>
+	<% if node['authconfig']['sssd']['auth'] -%>
 		--enablesssdauth
 	<% else -%>
 		--disablesssdauth
 	<% end -%>
-	<% if node[:authconfig][:sssd][:forcelegacy] -%>
-		--enableforcelegacy
-	<% else -%>
-		--disableforcelegacy
-	<% end -%>
-	<% if node[:authconfig][:sssd][:cachecreds] -%>
-		--enablecachecreds
-	<% else -%>
-		--disablecachecreds
+	<% if node['platform_version'].to_i >= 6 -%>
+  	<% if node['authconfig']['sssd']['forcelegacy'] -%>
+  		--enableforcelegacy
+  	<% else -%>
+  		--disableforcelegacy
+  	<% end -%>
+  	<% if node['authconfig']['sssd']['cachecreds'] -%>
+  		--enablecachecreds
+  	<% else -%>
+  		--disablecachecreds
+  	<% end -%>
 	<% end -%>
 <% end -%>
-<% if node[:authconfig][:cachecreds] -%>
+<% if node['authconfig']['cachecreds'] -%>
 	--enablecache
 <% else -%>
 	--disablecache
 <% end -%>
-<% if node[:authconfig][:localauth] -%>
+<% if node['authconfig']['localauth'] -%>
 	--enablelocauthorize
 <% else -%>
 	--disablelocauthorize
 <% end -%>
-<% if node[:authconfig][:pamaccess] -%>
+<% if node['authconfig']['pamaccess'] -%>
 	--enablepamaccess
 <% else -%>
 	--disablepamaccess
 <% end -%>
-<% if node[:authconfig][:sysnetauth] -%>
+<% if node['authconfig']['sysnetauth'] -%>
 	--enablesysnetauth
 <% else -%>
 	--disablesysnetauth
 <% end -%>
-<% if node[:authconfig][:mkhomedir] -%>
+<% if node['authconfig']['mkhomedir'] -%>
 	--enablemkhomedir
 <% else -%>
 	--disablemkhomedir

@@ -7,7 +7,7 @@ reconnection_retries = 3
 
 # If a back end is particularly slow you can raise this timeout here
 sbus_timeout = 30
-services = nss, pam<% if node[:authconfig][:ldap][:sudo][:enable] -%>, sudo<% end -%><% if node[:authconfig][:autofs][:sssdservice] -%>, autofs<% end -%>
+services = nss, pam<% if node['authconfig']['ldap']['sudo']['enable'] -%>, sudo<% end -%><% if node['authconfig']['autofs']['sssdservice'] -%>, autofs<% end -%><% if node['authconfig']['sssd']['ssh'] -%>, ssh<% end -%>
 
 # SSSD will not start if you do not configure any domains.
 # Add new domain configurations as [domain/<NAME>] sections, and
@@ -15,24 +15,14 @@ services = nss, pam<% if node[:authconfig][:ldap][:sudo][:enable] -%>, sudo<% en
 # queried) to the "domains" attribute below and uncomment it.
 # domains = LOCAL,LDAP
 
-<% if node[:authconfig][:ldap][:dnbase] != '' -%>
-	<% dnbasearr = node[:authconfig][:ldap][:dnbase].split(';') -%>
-	<% numdomains = dnbasearr.count -%>
-	<% domainlist = "domain1" -%>
-	<% 2.upto(numdomains) do |count| -%>
-		<% domainlist += ",domain#{count}" -%>
-	<% end -%>
-domains = <%= domainlist %>
-<% else -%>
-	<% numdomains = 1 -%>
-domains = domain1
-<% end -%>
 
-<% if node[:authconfig][:autofs][:enable] -%>
+domains = <%= node['authconfig']['ldap']['dns']['domain'] %>
+
+<% if node['authconfig']['autofs']['enable'] -%>
 [autofs]
 
 <% end -%>
-<% if node[:authconfig][:ldap][:sudo][:enable] -%>
+<% if node['authconfig']['ldap']['sudo']['enable'] -%>
 [sudo]
 
 <% end -%>
@@ -54,77 +44,107 @@ reconnection_retries = 3
 [pam]
 reconnection_retries = 3
 
-<% 1.upto(numdomains) do |count| -%>
-[domain/domain<%= count %>]
-enumerate = false
-ldap_uri = <%= node[:authconfig][:ldap][:server] %>
-<% if node[:authconfig][:ldap][:dnbase] != '' -%>
-ldap_search_base = <%= dnbasearr[count-1] %>
+
+[domain/<%= node['authconfig']['ldap']['dns']['domain'] %>]
+enumerate = <%= node['authconfig']['domain']['enumerate'] %>
+
+<% if !node['authconfig']['ldap']['dns']['srv'] and node['authconfig']['ldap']['server'] != ''-%>
+ldap_uri = <%= node['authconfig']['ldap']['server'] %>
 <% end -%>
-<% if node[:authconfig][:ldap][:dnbind] != '' -%>
-ldap_default_bind_dn = <%= node[:authconfig][:ldap][:dnbind] %>
+
+<% if node['authconfig']['ldap']['dnbase'] != '' -%>
+ldap_search_base = <%= node['authconfig']['ldap']['dnbase'] %>
 <% end -%>
-<% if node[:authconfig][:ldap][:user_search] != '' -%>
-ldap_user_search_base = <%= node[:authconfig][:ldap][:user_search] %>
+<% if node['authconfig']['ldap']['dnbind'] != '' -%>
+ldap_default_bind_dn = <%= node['authconfig']['ldap']['dnbind'] %>
 <% end -%>
-<% if node[:authconfig][:ldap][:group_search] != '' -%>
-ldap_group_search_base = <%= node[:authconfig][:ldap][:group_search] %>
+<% if node['authconfig']['ldap']['user_search'] != '' -%>
+ldap_user_search_base = <%= node['authconfig']['ldap']['user_search'] %>
 <% end -%>
-<% if node[:authconfig][:ldap][:rfc2307bis] -%>
+<% if node['authconfig']['ldap']['group_search'] != '' -%>
+ldap_group_search_base = <%= node['authconfig']['ldap']['group_search'] %>
+<% end -%>
+<% if node['authconfig']['ldap']['rfc2307bis'] -%>
 ldap_schema = rfc2307bis
 <% else -%>
 ldap_schema = rfc2307
 <% end -%>
-<% if node[:authconfig][:ldap][:enable] -%>
+<% if node['authconfig']['ldap']['enable'] -%>
 id_provider = ldap
+<% elsif node['authconfig']['ad']['enable'] -%>
+id_provider = ad
 <% else -%>
 id_provider = local
 <% end -%>
-<% if node[:authconfig][:ldap][:sudo][:enable] -%>
+<% if node['authconfig']['ldap']['sudo']['enable'] -%>
 sudo_provider = ldap
-ldap_sudo_search_base = <%= node[:authconfig][:ldap][:sudo][:basedn] %>
-ldap_sudo_full_refresh_interval=<%= node[:authconfig][:ldap][:sudo][:full_refresh] %>
-ldap_sudo_smart_refresh_interval=<%= node[:authconfig][:ldap][:sudo][:smart_refresh] %>
+ldap_sudo_search_base = <%= node['authconfig']['ldap']['sudo']['basedn'] %>
+ldap_sudo_full_refresh_interval=<%= node['authconfig']['ldap']['sudo']['full_refresh'] %>
+ldap_sudo_smart_refresh_interval=<%= node['authconfig']['ldap']['sudo']['smart_refresh'] %>
 <% end -%>
-<% if node[:authconfig][:ldap][:auth] -%>
+<% if node['authconfig']['ldap']['auth'] -%>
 auth_provider = ldap
 chpass_provider = ldap
-<% elsif node[:authconfig][:kerberos][:enable] -%>
+<% elsif node['authconfig']['kerberos']['auth'] -%>
 auth_provider = krb5
 chpass_provider = krb5
-krb5_realm = <%= node[:authconfig][:kerberos][:realm] %>
-krb5_server = <%= node[:authconfig][:kerberos][:kdcserver] %>
-krb5_kpasswd = <%= node[:authconfig][:kerberos][:passwdserver] %>
-<% unless node[:authconfig][:kerberos][:kdcbackupserver].empty? -%>
-krb5_backup_server = <%= node[:authconfig][:kerberos][:kdcbackupserver] %>
+krb5_kpasswd = <%= node['authconfig']['kerberos']['kdcserver'] %>
+krb5_backup_kpasswd = <%= node['authconfig']['kerberos']['kdcbackupserver'] %>
+<% if node['authconfig']['ad']['auth'] -%>
+access_provider = ad
 <% end -%>
+<% elsif node['authconfig']['ad']['auth'] -%>
+auth_provider = ad
+access_provider = ad
+chpass_provider = ad
 <% else -%>
 # Comment out auth provider to default to locals
 #auth_provider = none
 <% end -%>
-ldap_tls_cacertdir = <%= node[:authconfig][:ldap][:cacertdir] %>
-<% if node[:authconfig][:ldap][:starttls] -%>
+<% if node['authconfig']['kerberos']['enable'] -%>
+krb5_realm = <%= node['authconfig']['kerberos']['realm'] %>
+krb5_server = <%= node['authconfig']['kerberos']['kdcserver'] %>
+krb5_backup_server = <%= node['authconfig']['kerberos']['kdcbackupserver'] %>
+<% if node['authconfig']['kerberos']['use_enterprise_principal'] -%>
+krb5_use_enterprise_principal = true
+<% end -%>
+<% end -%>
+<% if node['authconfig']['ad']['enable'] -%>
+ad_server = <%= node['authconfig']['ad']['server'] %>
+ad_hostname = <%= node['authconfig']['ad']['hostname'] %>
+ad_domain = <%= node['authconfig']['ad']['domain'] %>
+ad_group_nesting_level = 5
+<% if node['authconfig']['ad']['access_filter'] -%>
+ad_access_filter = <%= node['authconfig']['ad']['access_filter'] %>
+<% end -%>
+<% end -%>
+ldap_tls_cacertdir = <%= node['authconfig']['ldap']['cacertdir'] %>
+<% if node['authconfig']['ldap']['starttls'] -%>
 ldap_id_use_start_tls = True
 <% else -%>
 ldap_id_use_start_tls = False
 <% end -%>
-<% if node[:authconfig][:sssd][:cachecreds] -%>
+<% if node['authconfig']['sssd']['cachecreds'] -%>
 cache_credentials = True
 <% else -%>
 cache_credentials = False
 <% end -%>
-<% unless node[:authconfig][:ldap][:reqcert] -%>
+<% unless node['authconfig']['ldap']['reqcert'] -%>
 ldap_tls_reqcert = never
 <% end -%>
-<% if node[:authconfig][:ldap][:disable_tls] -%>
+<% if node['authconfig']['ldap']['disable_tls'] -%>
 ldap_auth_disable_tls_never_use_in_production = true
 <% end -%>
-<% if node[:authconfig][:ldap][:bindpw] != '' -%>
-ldap_default_authtok_type = <%= node[:authconfig][:ldap][:authtok_type] %>
-ldap_default_authtok = <%= node[:authconfig][:ldap][:bindpw] %>
+<% if node['authconfig']['ldap']['bindpw'] != '' -%>
+ldap_default_authtok_type = <%= node['authconfig']['ldap']['authtok_type'] %>
+ldap_default_authtok = <%= node['authconfig']['ldap']['bindpw'] %>
 <% end -%>
 
-<% if node[:authconfig][:ldap][:server_is_ad] -%>
+<% if node['authconfig']['ipa']['enable'] -%>
+ldap_user_ssh_public_key = <%= node['authconfig']['ipa']['attribute'] %>
+<% end -%>
+
+<% if node['authconfig']['ldap']['server_is_ad'] -%>
 min_id = 700
 ldap_user_principal = userPrincipalName
 ldap_user_fullname = displayName
@@ -137,6 +157,12 @@ ldap_force_upper_case_realm = True
 ldap_group_member = msSFU30PosixMember
 
 <% else -%>
-ldap_group_member = uniqueMember
+<% if node['authconfig']['ldap']['group_member'] != 'posixGroup' -%>
+ldap_group_member = <%= node['authconfig']['ldap']['group_member'] -%>
 <% end -%>
+<% end -%>
+
+default_shell = /bin/bash
+<% if node['authconfig']['sssd']['enable'] -%>
+override_homedir = <%= node['authconfig']['sssd']['homedir'] %>
 <% end -%>

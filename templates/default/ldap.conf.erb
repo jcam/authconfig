@@ -1,21 +1,37 @@
-<% if node[:authconfig][:ldap][:dnbase] != '' -%>
-base <%= node[:authconfig][:ldap][:dnbase] %>
+<% if node['authconfig']['ldap']['dnbase'] != '' -%>
+base <%= node['authconfig']['ldap']['dnbase'] %>
 <% end -%>
-<% if node[:authconfig][:ldap][:dnbind] != '' -%>
-binddn <%= node[:authconfig][:ldap][:dnbind] %>
+<% if node['authconfig']['ldap']['sudo']['base'] != '' -%>
+sudoers_base <%= node['authconfig']['ldap']['sudo']['base'] %>
 <% end -%>
-<% if node[:authconfig][:ldap][:bindpw] != '' -%>
-bindpw <%= node[:authconfig][:ldap][:bindpw] %>
+<% if node['authconfig']['ldap']['hosts']['base'] != '' -%>
+nss_base_hosts    <%= node['authconfig']['ldap']['hosts']['base'] %>
+<% end -%>
+<% if node['authconfig']['ldap']['user_search'] != '' -%>
+nss_base_passwd   <%= node['authconfig']['ldap']['user_search'] %>
+<% end -%>
+<% if node['authconfig']['ldap']['user_search'] != '' -%>
+nss_base_shadow   <%= node['authconfig']['ldap']['user_search'] %>
+<% end -%>
+<% if node['authconfig']['ldap']['group_search'] != '' -%>
+nss_base_group    <%= node['authconfig']['ldap']['group_search'] %>
+<% end -%>
+<% if node['authconfig']['ldap']['dnbind'] != '' -%>
+binddn <%= node['authconfig']['ldap']['dnbind'] %>
+<% end -%>
+<% if node['authconfig']['ldap']['bindpw'] != '' -%>
+bindpw <%= node['authconfig']['ldap']['bindpw'] %>
 <% end -%>
 timelimit 120
 bind_timelimit 120
 idle_timelimit 3600
 nss_initgroups_ignoreusers root,ldap,named,avahi,haldaemon,dbus,radvd,tomcat,radiusd,news,mailman,nscd,gdm
-uri <%= node[:authconfig][:ldap][:server] %>
+uri <%= node['authconfig']['ldap']['server'] %>
 ssl no
-tls_cacertdir <%= node[:authconfig][:ldap][:cacertdir] %>
+scope sub
+tls_cacertdir <%= node['authconfig']['ldap']['cacertdir'] %>
 pam_password md5
-<% if node[:authconfig][:ldap][:server_is_ad] -%>
+<% if node['authconfig']['ldap']['server_is_ad'] -%>
 nss_map_objectclass posixAccount User
 nss_map_objectclass shadowAccount User
 nss_map_attribute uid sAMAccountName
