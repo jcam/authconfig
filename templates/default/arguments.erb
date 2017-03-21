@@ -127,6 +127,22 @@
 <% if node[:authconfig][:winbind][:join] && false -%>
 	--winbindjoin=<%= node[:authconfig][:winbind][:join] %>
 <% end -%>
+<% if node[:platform_version].to_i == 6 -%>
+<% if node[:authconfig][:ipav2][:enable] -%>
+	--enableipav2
+	--ipav2domain=<%= node[:authconfig][:ipav2][:domain] %>
+	--ipav2realm=<%= node[:authconfig][:ipav2][:realm] %>
+	--ipav2server=<%= node[:authconfig][:ipav2][:server] %>
+<% if node[:authconfig][:ipav2][:enablenontp] -%>
+	--enableipav2nontp
+<% else -%>
+	--disableipav2nontp
+<% end %>
+	--ipav2join=<%= node[:authconfig][:ipav2][:ipav2join] %>
+<% else -%>
+	--disableipav2
+<% end %>
+<% end %>
 <% if node[:authconfig][:wins][:enable] -%>
 	--enablewins
 <% else -%>
