@@ -24,7 +24,7 @@
 sssd_action = nil
 nslcd_enable = false
 case node['platform']
-when 'redhat', 'centos', 'scientific'
+when 'redhat', 'centos', 'scientific', 'oracle'
   case node['platform_version'].to_i
   when 7
     sssd_action = 'install'
