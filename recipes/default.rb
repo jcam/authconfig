@@ -168,11 +168,15 @@ if sssd_action == 'install'
 end
 
 service "sssd" do
-  supports :status => true, :restart => true, :reload => true
+  if node['platform_version'].to_i > 6
+    supports :status => true, :restart => true, :reload => false 
+  else
+    supports :status => true, :restart => true, :reload => true
   # Avoid starting or restarting sssd if disabled,
   # especially when kerberos is enabled, and ldap not
-  restart_command "/sbin/chkconfig sssd --list | grep -v :on || /sbin/service sssd restart"
-  start_command "/sbin/chkconfig sssd --list | grep -v :on || /sbin/service sssd start"
+    restart_command "/sbin/chkconfig sssd --list | grep -v :on || /sbin/service sssd restart"
+    start_command "/sbin/chkconfig sssd --list | grep -v :on || /sbin/service sssd start"
+  end
   action :nothing
 end
 
@@ -184,7 +188,11 @@ template '/etc/authconfig/arguments' do
   group 'root'
   notifies :install, 'package[autofs]' if node['authconfig']['autofs']['enable']
   notifies :run, 'execute[authconfig-update]', :immediately
-  notifies :reload, 'service[sssd]', :immediately if sssd_action == 'install'
+  if node['platform_version'].to_i > 6
+    notifies :restart, 'service[sssd]', :immediately if sssd_action == 'install'
+  else
+    notifies :reload, 'service[sssd]', :immediately if sssd_action == 'install'
+  end
   notifies :reload, 'service[autofs]', :immediately if node['authconfig']['autofs']['enable']
   notifies :reload, 'ohai[reload_passwd]', :immediately if sssd_action != 'install'
 end
